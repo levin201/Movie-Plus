@@ -619,6 +619,7 @@ export class DbManager {
     playrecord_migrated?: boolean;
     favorite_migrated?: boolean;
     skip_migrated?: boolean;
+    subscription_expiry?: number;
   } | null> {
     if (typeof (this.storage as any).getUserInfoV2 === 'function') {
       return (this.storage as any).getUserInfoV2(userName);
@@ -675,6 +676,7 @@ export class DbManager {
       oidcSub?: string;
       enabledApis?: string[];
       created_at: number;
+      subscription_expiry?: number;
     }>;
     total: number;
   }> {
