@@ -167,13 +167,11 @@ const Sidebar = ({ onToggle, activePath = '/' }: SidebarProps) => {
       if (auth.role === 'owner' || auth.role === 'admin') {
         setIsAdmin(true);
       }
-      // Admin/owner doesn't need to check
-      if (auth.role !== 'owner' && auth.role !== 'admin') {
-        fetch('/api/user/info')
-          .then(r => r.json())
-          .then(d => { if (d.remaining_days !== undefined) setSubRemaining(d.remaining_days); })
-          .catch(() => {});
-      }
+      // Always fetch subscription info for logged-in users
+      fetch('/api/user/info')
+        .then(r => r.json())
+        .then(d => { if (d.remaining_days !== undefined) setSubRemaining(d.remaining_days); })
+        .catch(() => {});
     }
   }, []);
 
@@ -463,9 +461,9 @@ const Sidebar = ({ onToggle, activePath = '/' }: SidebarProps) => {
                         {username}
                       </span>
                     )}
-                    {!isCollapsed && subRemaining >= 0 && (
-                      <span className={`text-[10px] ml-4 ${subRemaining <= 7 ? 'text-red-500' : subRemaining <= 30 ? 'text-amber-500' : 'text-green-500'}`}>
-                        {subRemaining === 0 ? '试用已到期' : `剩余 ${subRemaining} 天`}
+                    {!isCollapsed && subRemaining !== -1 && (
+                      <span className={`text-[10px] ml-4 ${subRemaining === 0 ? 'text-red-500' : subRemaining <= 7 ? 'text-amber-500' : 'text-green-500'}`}>
+                        {subRemaining === 0 ? '试用已到期' : subRemaining < 0 ? '永久有效' : `剩余 ${subRemaining} 天`}
                       </span>
                     )}
                   </div>
