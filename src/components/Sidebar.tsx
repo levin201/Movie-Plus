@@ -157,6 +157,7 @@ const Sidebar = ({ onToggle, activePath = '/' }: SidebarProps) => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState('');
+  const [subRemaining, setSubRemaining] = useState(-1);
 
   useEffect(() => {
     const auth = getAuthInfoFromBrowserCookie();
@@ -165,6 +166,13 @@ const Sidebar = ({ onToggle, activePath = '/' }: SidebarProps) => {
       setUsername(auth.username || '');
       if (auth.role === 'owner' || auth.role === 'admin') {
         setIsAdmin(true);
+      }
+      // Admin/owner doesn't need to check
+      if (auth.role !== 'owner' && auth.role !== 'admin') {
+        fetch('/api/user/info')
+          .then(r => r.json())
+          .then(d => { if (d.remaining_days !== undefined) setSubRemaining(d.remaining_days); })
+          .catch(() => {});
       }
     }
   }, []);
@@ -447,13 +455,20 @@ const Sidebar = ({ onToggle, activePath = '/' }: SidebarProps) => {
 
                 <div className='my-1 border-t border-gray-200/50 dark:border-gray-700/50'></div>
 
-                <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'} px-2 pt-1`}>
-                  {!isCollapsed && (
-                    <span className='text-xs text-gray-500 dark:text-gray-400 truncate max-w-[120px]' title={username}>
-                      <User className='h-3 w-3 inline mr-1' />
-                      {username}
-                    </span>
-                  )}
+                <div className={`flex items-center ${isCollapsed ? 'justify-center flex-col gap-1' : 'justify-between'} px-2 pt-1`}>
+                  <div className='flex flex-col'>
+                    {!isCollapsed && (
+                      <span className='text-xs text-gray-500 dark:text-gray-400 truncate max-w-[120px]' title={username}>
+                        <User className='h-3 w-3 inline mr-1' />
+                        {username}
+                      </span>
+                    )}
+                    {!isCollapsed && subRemaining >= 0 && (
+                      <span className={`text-[10px] ml-4 ${subRemaining <= 7 ? 'text-red-500' : subRemaining <= 30 ? 'text-amber-500' : 'text-green-500'}`}>
+                        {subRemaining === 0 ? '试用已到期' : `剩余 ${subRemaining} 天`}
+                      </span>
+                    )}
+                  </div>
                   <button
                     onClick={() => window.dispatchEvent(new CustomEvent('openUserPanel', { detail: 'logout' }))}
                     className='flex items-center justify-center p-1.5 rounded-lg text-red-500 hover:bg-red-50/70 dark:hover:bg-red-900/20 transition-colors'

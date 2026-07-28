@@ -1,6 +1,6 @@
 'use client';
 
-import { Bell, KeyRound, Monitor, X } from 'lucide-react';
+import { Bell, Calendar, KeyRound, Monitor, X } from 'lucide-react';
 import { createPortal } from 'react-dom';
 
 interface PersonalCenterPanelProps {
@@ -14,6 +14,7 @@ interface PersonalCenterPanelProps {
   roleBadgeClassName: string;
   showDeviceManagement: boolean;
   showChangePassword: boolean;
+  subscriptionRemaining: number;
   onOpenEmailSettings: () => void;
   onOpenDeviceManagement: () => void;
   onOpenChangePassword: () => void;
@@ -30,6 +31,7 @@ export function PersonalCenterPanel({
   roleBadgeClassName,
   showDeviceManagement,
   showChangePassword,
+  subscriptionRemaining,
   onOpenEmailSettings,
   onOpenDeviceManagement,
   onOpenChangePassword,
@@ -80,6 +82,12 @@ export function PersonalCenterPanel({
             <h3 className='text-xl font-bold text-gray-900 dark:text-gray-100'>
               {username}
             </h3>
+            {subscriptionRemaining >= 0 && (
+              <p className={`mt-1 text-sm ${subscriptionRemaining === 0 ? 'text-red-500' : subscriptionRemaining <= 7 ? 'text-amber-500' : 'text-green-500'}`}>
+                <Calendar className='h-3 w-3 inline mr-1' />
+                {subscriptionRemaining === 0 ? '试用已到期，请联系管理员续费' : `剩余 ${subscriptionRemaining} 天试用期`}
+              </p>
+            )}
           </div>
 
           <div className='space-y-3'>

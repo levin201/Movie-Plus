@@ -77,6 +77,7 @@ export const UserMenu: React.FC = () => {
   const [isDownloadManagementOpen, setIsDownloadManagementOpen] =
     useState(false);
   const [isTVRemoteOpen, setIsTVRemoteOpen] = useState(false);
+  const [subscriptionRemaining, setSubscriptionRemaining] = useState(-1);
   const [authInfo, setAuthInfo] = useState<AuthInfo | null>(null);
   const [storageType, setStorageType] = useState<string>('localstorage');
   const [displayStorageType, setDisplayStorageType] =
@@ -2262,6 +2263,12 @@ export const UserMenu: React.FC = () => {
   const handleOpenProfileCenter = () => {
     setIsOpen(false);
     setIsProfileCenterOpen(true);
+    if (authInfo?.role !== 'owner' && authInfo?.role !== 'admin') {
+      fetch('/api/user/info')
+        .then(r => r.json())
+        .then(d => { if (d.remaining_days !== undefined) setSubscriptionRemaining(d.remaining_days); })
+        .catch(() => {});
+    }
   };
 
   // 菜单面板内容
@@ -5098,6 +5105,7 @@ export const UserMenu: React.FC = () => {
         roleBadgeClassName={roleBadgeClassName}
         showDeviceManagement={storageType !== 'localstorage'}
         showChangePassword={showChangePassword}
+        subscriptionRemaining={subscriptionRemaining}
         onOpenEmailSettings={() => {
           setIsProfileCenterOpen(false);
           setIsEmailSettingsOpen(true);
