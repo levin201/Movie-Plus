@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 
 export default function SubscribePage() {
   const [loading, setLoading] = useState(false);
+  const [paid, setPaid] = useState(false);
   const [message, setMessage] = useState('');
   const [userInfo, setUserInfo] = useState<{ username: string; remaining_days: number } | null>(null);
 
@@ -26,9 +27,10 @@ export default function SubscribePage() {
       });
       const data = await res.json();
       if (data.ok) {
+        setPaid(true);
         setMessage(`✅ 支付成功！订阅已延长 ${months} 个月`);
         setUserInfo((prev) => prev ? { ...prev, remaining_days: prev.remaining_days + months * 30 } : null);
-        setTimeout(() => window.location.href = '/', 1500);
+        setTimeout(() => window.location.href = '/', 2000);
       } else {
         setMessage(`❌ ${data.error || '支付失败'}`);
       }
@@ -75,7 +77,7 @@ export default function SubscribePage() {
 
         <button
           onClick={() => handlePay(12)}
-          disabled={loading}
+          disabled={loading || paid}
           className='w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-xl transition-colors disabled:opacity-50'
         >
           {loading ? '处理中...' : `立即支付 ¥388 / 年`}
