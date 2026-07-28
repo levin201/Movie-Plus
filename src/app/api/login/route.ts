@@ -352,7 +352,7 @@ export async function POST(req: NextRequest) {
     }
 
     // 检查订阅到期（管理员除外）
-    if (userRole !== 'owner' && userRole !== 'admin') {
+    if (userInfoV2 && userRole !== 'owner' && userRole !== 'admin') {
       const subExpiry = userInfoV2.subscription_expiry;
       if (subExpiry && subExpiry > 0 && Date.now() > subExpiry) {
         return NextResponse.json(
