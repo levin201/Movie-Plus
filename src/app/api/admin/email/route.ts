@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 import type { AdminConfig } from '@/lib/admin.types';
 import { getAuthInfoFromCookie } from '@/lib/auth';
@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
 
       try {
         const adminConfig = await getConfig();
-        const siteName = adminConfig?.SiteConfig?.SiteName || 'MoviePlus';
+        const siteName = adminConfig?.SiteConfig?.SiteName || 'Movie-Plus';
         await EmailService.sendTestEmail(emailConfig, testEmail, siteName);
         return NextResponse.json({ success: true, message: '测试邮件发送成功' });
       } catch (error) {

@@ -1,6 +1,6 @@
-'use client';
+﻿'use client';
 
-const DB_NAME = 'moontv_book_tts';
+const DB_NAME = 'movie_book_tts';
 const STORE_NAME = 'audio_chunks';
 const DB_VERSION = 1;
 const DEFAULT_CACHE_LIMIT = 150 * 1024 * 1024;

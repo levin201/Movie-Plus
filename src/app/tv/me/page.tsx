@@ -32,16 +32,16 @@ import {
 
 import TVLayout from '@/components/tv/TVLayout';
 
-const LOCAL_REMOTE_URL_KEY = 'MovieTV_local_remote_url';
+const LOCAL_REMOTE_URL_KEY = 'movie_local_remote_url';
 
-type MovieTVLocalRemoteBridge = {
+type MovieLocalRemoteBridge = {
   getRemoteUrl?: () => string;
 };
 
 declare global {
   interface Window {
-    MovieTVLocalRemote?: MovieTVLocalRemoteBridge;
-    __MovieTV_LOCAL_REMOTE_URL?: string;
+    MovieLocalRemote?: MovieLocalRemoteBridge;
+    __MOVIEPLUS_LOCAL_REMOTE_URL?: string;
   }
 }
 
@@ -102,10 +102,10 @@ export default function TVMePage() {
 
   useEffect(() => {
     const readLocalRemoteUrl = () => {
-      const bridgeUrl = window.MovieTVLocalRemote?.getRemoteUrl?.() || '';
+      const bridgeUrl = window.MovieLocalRemote?.getRemoteUrl?.() || '';
       setLocalRemoteUrl(
         bridgeUrl ||
-        window.__MovieTV_LOCAL_REMOTE_URL ||
+        window.__MOVIEPLUS_LOCAL_REMOTE_URL ||
         localStorage.getItem(LOCAL_REMOTE_URL_KEY) ||
         ''
       );
@@ -117,11 +117,11 @@ export default function TVMePage() {
     };
 
     readLocalRemoteUrl();
-    window.addEventListener('MovieTV:local-remote-info', onLocalRemoteInfo);
+    window.addEventListener('movie:local-remote-info', onLocalRemoteInfo);
     const timer = window.setInterval(readLocalRemoteUrl, 1500);
 
     return () => {
-      window.removeEventListener('MovieTV:local-remote-info', onLocalRemoteInfo);
+      window.removeEventListener('movie:local-remote-info', onLocalRemoteInfo);
       window.clearInterval(timer);
     };
   }, []);

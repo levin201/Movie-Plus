@@ -1,6 +1,6 @@
-'use client';
+﻿'use client';
 
-const DB_NAME = 'moontv_books_cache';
+const DB_NAME = 'movie_books_cache';
 const STORE_NAME = 'epub_files';
 const DB_VERSION = 1;
 const DEFAULT_CACHE_LIMIT = 500 * 1024 * 1024;

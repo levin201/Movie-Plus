@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 下载任务数据库管理
  */
 
@@ -54,7 +54,7 @@ export interface CompletedTask {
   downloadMode: 'browser' | 'filesystem' | 'indexeddb';
 }
 
-const DB_NAME = 'MoonTVPlus';
+const DB_NAME = 'MoviePlus';
 const DB_VERSION = 2;
 const ACTIVE_TASKS_STORE = 'activeTasks';
 const COMPLETED_TASKS_STORE = 'completedTasks';

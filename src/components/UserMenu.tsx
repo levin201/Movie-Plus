@@ -22,7 +22,6 @@ import {
   MoveDown,
   MoveUp,
   Package,
-  Router as RouterIcon,
   Rss,
   Settings,
   Shield,
@@ -75,7 +74,6 @@ export const UserMenu: React.FC = () => {
   const [isEmailSettingsOpen, setIsEmailSettingsOpen] = useState(false);
   const [isDeviceManagementOpen, setIsDeviceManagementOpen] = useState(false);
   const [isEcoAppsOpen, setIsEcoAppsOpen] = useState(false);
-  const [isReportOpen, setIsReportOpen] = useState(false);
   const [isDownloadManagementOpen, setIsDownloadManagementOpen] =
     useState(false);
   const [isTVRemoteOpen, setIsTVRemoteOpen] = useState(false);
@@ -109,21 +107,8 @@ export const UserMenu: React.FC = () => {
   const tvQrScanStopRef = useRef(false);
   const [tvAccessTab, setTvAccessTab] = useState<'tvbox' | 'orion' | 'web'>('tvbox');
 
-   // Expose panel openers for Sidebar
-   useEffect(() => {
-     (window as any).__openNotifications = () => setIsNotificationPanelOpen(true);
-     (window as any).__openFavorites = () => setIsFavoritesPanelOpen(true);
-     (window as any).__openSettings = () => setIsProfileCenterOpen(true);
-     (window as any).__openEcoApps = () => setIsEcoAppsOpen(true);
-     return () => {
-       delete (window as any).__openNotifications;
-       delete (window as any).__openFavorites;
-       delete (window as any).__openSettings;
-     };
-   }, []);
-
-   // Body 滚动锁定 - 使用 overflow 方式避免布局问题
-   useEffect(() => {
+  // Body 滚动锁定 - 使用 overflow 方式避免布局问题
+  useEffect(() => {
     if (
       isProfileCenterOpen ||
       isSettingsOpen ||
@@ -133,7 +118,6 @@ export const UserMenu: React.FC = () => {
       isEmailSettingsOpen ||
       isDeviceManagementOpen ||
       isEcoAppsOpen ||
-      isReportOpen ||
       isDownloadManagementOpen ||
       isTvQrScannerOpen ||
       isTVRemoteOpen
@@ -164,7 +148,6 @@ export const UserMenu: React.FC = () => {
     isEmailSettingsOpen,
     isDeviceManagementOpen,
     isEcoAppsOpen,
-    isReportOpen,
     isDownloadManagementOpen,
     isTvQrScannerOpen,
     isTVRemoteOpen,
@@ -1420,6 +1403,48 @@ export const UserMenu: React.FC = () => {
     setTvQrScannerError('');
   }, [stopTvQrScanner]);
 
+  useEffect(() => {
+    const handleOpenPanel = (e: Event) => {
+      const detail = (e as CustomEvent).detail as string;
+      setIsOpen(false);
+      switch (detail) {
+        case 'notifications':
+          setIsNotificationPanelOpen(true);
+          break;
+        case 'favorites':
+          setIsFavoritesPanelOpen(true);
+          break;
+        case 'settings':
+          setIsSettingsOpen(true);
+          break;
+        case 'tv-access':
+          setIsSubscribeOpen(true);
+          setCopySuccess(false);
+          setOrionBaseUrlCopySuccess(false);
+          if (subscribeEnabled) {
+            fetchSubscribeUrl();
+          }
+          break;
+        case 'eco-apps':
+          setIsEcoAppsOpen(true);
+          break;
+        case 'logout':
+          handleLogout();
+          break;
+        case 'admin':
+          handleAdminPanel();
+          break;
+        default:
+          break;
+      }
+    };
+
+    window.addEventListener('openUserPanel', handleOpenPanel);
+    return () => {
+      window.removeEventListener('openUserPanel', handleOpenPanel);
+    };
+  }, []);
+
   const handleQrLoginResult = useCallback((rawValue: string) => {
     try {
       const url = new URL(rawValue, window.location.origin);
@@ -2249,7 +2274,7 @@ export const UserMenu: React.FC = () => {
       />
 
       {/* 菜单面板 */}
-      <div className='fixed bottom-20 left-4 w-56 bg-white dark:bg-gray-900 rounded-lg shadow-xl z-[1001] border border-gray-200/50 dark:border-gray-700/50 overflow-hidden select-none'>
+      <div className='fixed top-14 right-4 w-56 bg-white dark:bg-gray-900 rounded-lg shadow-xl z-[1001] border border-gray-200/50 dark:border-gray-700/50 overflow-hidden select-none'>
         {/* 用户信息区域 */}
         <div className='px-3 py-1 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-gray-50 to-gray-100/50 dark:from-gray-800 dark:to-gray-800/50'>
           <div className='flex items-start justify-between gap-3'>
@@ -2361,7 +2386,7 @@ export const UserMenu: React.FC = () => {
             <span className='font-medium'>电视访问</span>
           </button>
 
-          {/* 平台应用按钮 */}
+          {/* 生态应用按钮 */}
           <button
             onClick={() => {
               setIsOpen(false);
@@ -2949,7 +2974,7 @@ export const UserMenu: React.FC = () => {
                       </h4>
                       <p className='text-xs text-gray-500 dark:text-gray-400 mt-1'>
                         用于 Bangumi
-                        动漫和番剧详情；默认主源直连，备用源服务器代理。
+                        新番放送和番剧详情；默认主源直连，备用源服务器代理。
                       </p>
                     </div>
 
@@ -4694,7 +4719,7 @@ export const UserMenu: React.FC = () => {
                 </div>
               </div>
               <p className='mt-5 text-sm leading-6 text-slate-600 dark:text-slate-400'>
-                可直接作为 MovieTV Plus 电视端使用，适合安装到 Android TV / 电视盒子。
+                可直接作为 Movie-Plus 电视端使用，适合安装到 Android TV / 电视盒子。
               </p>
               <div className='mt-5'>
                 <h5 className='mb-2 text-sm font-bold text-slate-700 dark:text-slate-300'>
@@ -4908,87 +4933,7 @@ export const UserMenu: React.FC = () => {
     </>
   );
 
-  // 举报信息弹窗
-  const reportPanel = (
-    <>
-      {/* 背景遮罩 */}
-      <div
-        className='fixed inset-0 bg-black/50 backdrop-blur-sm z-[1002]'
-        onClick={() => setIsReportOpen(false)}
-        onTouchMove={(e) => {
-          e.preventDefault();
-        }}
-        onWheel={(e) => {
-          e.preventDefault();
-        }}
-        style={{
-          touchAction: 'none',
-        }}
-      />
-
-      {/* 举报信息面板 */}
-      <div className='fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg bg-white dark:bg-gray-900 rounded-xl shadow-xl z-[1003] overflow-hidden'>
-        <div
-          className='h-full max-h-[70vh] flex flex-col'
-          data-panel-content
-          onTouchMove={(e) => {
-            e.stopPropagation();
-          }}
-          style={{
-            touchAction: 'auto',
-          }}
-        >
-          {/* 标题栏 */}
-          <div className='flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700'>
-            <h3 className='text-xl font-bold text-gray-800 dark:text-gray-200'>
-              耻辱柱
-            </h3>
-            <button
-              onClick={() => setIsReportOpen(false)}
-              className='w-8 h-8 p-1 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors'
-              aria-label='Close'
-            >
-              <X className='w-full h-full' />
-            </button>
-          </div>
-
-          {/* 内容区域 */}
-          <div className='flex-1 overflow-y-auto p-6'>
-            <div className='bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4'>
-              <p className='text-gray-800 dark:text-gray-200 leading-relaxed'>
-                抄袭狗
-                <span className='font-bold text-red-600 dark:text-red-400'>
-                  SzeMeng76
-                </span>
-                毫无廉耻，盯着本项目的commit区，疯狂抄袭。警告亦全当看不见，实为开源界耻辱。
-              </p>
-              <p className='text-gray-800 dark:text-gray-200 leading-relaxed mt-3'>
-                超分，观影室，豆瓣反爬，精确搜索等等等等，直接抄袭，最不要脸的就是，刚更新一版，几小时后直接抄走。
-              </p>
-              <p className='text-gray-800 dark:text-gray-200 leading-relaxed mt-3'>
-                <span className='font-semibold text-red-600 dark:text-red-400'>
-                  2026-02-25：
-                </span>
-                抄袭emby功能
-              </p>
-            </div>
-          </div>
-
-          {/* 底部按钮 */}
-          <div className='p-6 border-t border-gray-200 dark:border-gray-700'>
-            <button
-              onClick={() => setIsReportOpen(false)}
-              className='w-full px-4 py-2.5 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 font-medium rounded-lg transition-colors'
-            >
-              我知道了
-            </button>
-          </div>
-        </div>
-      </div>
-    </>
-  );
-
-  // 平台应用面板内容
+  // 生态应用面板内容
   const ecoAppsPanel = (
     <>
       {/* 背景遮罩 */}
@@ -5006,7 +4951,7 @@ export const UserMenu: React.FC = () => {
         }}
       />
 
-      {/* 平台应用面板 */}
+      {/* 生态应用面板 */}
       <div className='fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl bg-white dark:bg-gray-900 rounded-xl shadow-xl z-[1001] overflow-hidden'>
         <div
           className='h-full max-h-[85vh] flex flex-col'
@@ -5021,7 +4966,7 @@ export const UserMenu: React.FC = () => {
           {/* 标题栏 */}
           <div className='flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700'>
             <h3 className='text-xl font-bold text-gray-800 dark:text-gray-200'>
-              平台应用
+              生态应用
             </h3>
             <div className='flex items-center gap-2'>
               {/* 关闭按钮 */}
@@ -5038,13 +4983,13 @@ export const UserMenu: React.FC = () => {
           {/* 应用列表 */}
           <div className='flex-1 overflow-y-auto p-6'>
             <div className='grid gap-6 md:grid-cols-1'>
-              {/* MoviePlus-PC 客户端 */}
+              {/* Movie-Plus-PC 客户端 */}
               <div className='bg-gray-50 dark:bg-gray-800 rounded-lg p-5 border border-gray-200 dark:border-gray-700'>
                 <div className='flex items-start gap-4'>
                   <div className='flex-shrink-0 relative'>
                     <img
-                      src='/icons/movieplus-pc.svg'
-                      alt='MoviePlus-PC'
+                      src='/logo.svg'
+                      alt='Movie-Plus-PC'
                       className='w-16 h-16 rounded-xl object-cover'
                     />
                     <div className='absolute -bottom-1 -right-1 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center shadow-lg'>
@@ -5053,7 +4998,7 @@ export const UserMenu: React.FC = () => {
                   </div>
                   <div className='flex-1 min-w-0'>
                     <h4 className='text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2'>
-                      MoviePlus-PC客户端
+                      Movie-Plus-PC客户端
                     </h4>
                     <p className='text-sm text-gray-600 dark:text-gray-400 mb-3'>
                       专为Windows开发的客户端，完美支持私人影库mkv视频
@@ -5280,11 +5225,8 @@ export const UserMenu: React.FC = () => {
         onClose={() => setIsTVRemoteOpen(false)}
       />
 
-      {/* 使用 Portal 将平台应用面板渲染到 document.body */}
+      {/* 使用 Portal 将生态应用面板渲染到 document.body */}
       {isEcoAppsOpen && mounted && createPortal(ecoAppsPanel, document.body)}
-
-      {/* 使用 Portal 将举报信息面板渲染到 document.body */}
-      {isReportOpen && mounted && createPortal(reportPanel, document.body)}
 
       {/* 确认对话框 */}
       {confirmDialog.isOpen &&

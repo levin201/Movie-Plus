@@ -1,4 +1,4 @@
-﻿// 此文件由 scripts/convert-changelog.js 自动生成
+// 此文件由 scripts/convert-changelog.js 自动生成
 // 请勿手动编辑
 
 export interface ChangelogEntry {
@@ -905,7 +905,7 @@ export const changelog: ChangelogEntry[] = [
     changed: [
     "IOS全屏体验优化",
     "站点配置中的注册相关配置移动到了新的注册配置大项中",
-    "默认站名从MovieTV改为MoviePlus",
+    "默认站名变更为Movie-Plus",
     "用户管理现在会给oidc注册的用户显示oidc标识"
     ],
     fixed: [

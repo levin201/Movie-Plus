@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
 
     // 缓存不存在或已过期，获取新数据
     const config = await getConfig();
-    const tmdbApiKey = config.SiteConfig?.TMDBApiKey || process.env.TMDB_API_KEY;
+    const tmdbApiKey = config.SiteConfig?.TMDBApiKey;
     const tmdbProxy = config.SiteConfig?.TMDBProxy;
     const tmdbReverseProxy = config.SiteConfig?.TMDBReverseProxy;
 

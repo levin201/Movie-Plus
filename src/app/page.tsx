@@ -1,4 +1,4 @@
-﻿/* eslint-disable @typescript-eslint/no-explicit-any, react-hooks/exhaustive-deps, no-console */
+/* eslint-disable @typescript-eslint/no-explicit-any, react-hooks/exhaustive-deps, no-console */
 
 'use client';
 
@@ -10,7 +10,7 @@ import {
   Link as LinkIcon,
   ListVideo,
   Music,
-  Search,
+  Search as SearchIcon,
 } from 'lucide-react';
 import Link from 'next/link';
 import { Suspense, useEffect, useState } from 'react';
@@ -57,12 +57,12 @@ function HomeClient() {
   const { announcement, announcementDisplayMode } = useSite();
   // 首页模块配置状态
   const [homeModules, setHomeModules] = useState<HomeModule[]>([
-    { id: 'upcomingContent', name: '即将上映', enabled: true, order: 0 },
-    { id: 'hotMovies', name: '热门电影', enabled: true, order: 1 },
-    { id: 'hotDuanju', name: '热播短剧', enabled: true, order: 2 },
-    { id: 'bangumiCalendar', name: '动漫', enabled: true, order: 3 },
-    { id: 'hotTvShows', name: '热门剧集', enabled: true, order: 4 },
-    { id: 'hotVarietyShows', name: '热门综艺', enabled: true, order: 5 },
+    { id: 'hotMovies', name: '热门电影', enabled: true, order: 0 },
+    { id: 'hotDuanju', name: '热播短剧', enabled: true, order: 1 },
+    { id: 'bangumiCalendar', name: '动漫', enabled: true, order: 2 },
+    { id: 'hotTvShows', name: '热门剧集', enabled: true, order: 3 },
+    { id: 'hotVarietyShows', name: '热门综艺', enabled: true, order: 4 },
+    { id: 'upcomingContent', name: '即将上映', enabled: true, order: 5 },
   ]);
   const [homeBannerEnabled, setHomeBannerEnabled] = useState(true);
   const [homeContinueWatchingEnabled, setHomeContinueWatchingEnabled] =
@@ -73,7 +73,7 @@ function HomeClient() {
   const [showAIChat, setShowAIChat] = useState(false);
   const [aiEnabled, setAiEnabled] = useState(false);
   const [aiDefaultMessageNoVideo, setAiDefaultMessageNoVideo] = useState(
-    '你好！我是Movie的AI影视助手。想看什么电影或剧集？需要推荐吗？'
+      '你好！我是Movie-Plus的AI影视助手。想看什么电影或剧集？需要推荐吗？'
   );
   const [sourceSearchEnabled, setSourceSearchEnabled] = useState(true);
   const [musicEnabled, setMusicEnabled] = useState(false);
@@ -883,34 +883,18 @@ function HomeClient() {
   return (
     <PageLayout>
       <FireworksCanvas />
-      {/* 搜索栏 - 轮播图上方 */}
-      <div className='flex justify-center px-4 pt-4 pb-2'>
-        <div className='relative w-full max-w-lg'>
-          <div className='absolute inset-0 bg-gradient-to-r from-green-400/20 to-emerald-400/20 rounded-full blur-xl' />
-          <div className='relative flex items-center glass rounded-full shadow-lg shadow-black/5 dark:shadow-white/5 hover:shadow-xl transition-shadow'>
-            <Search size={18} className='absolute left-5 top-1/2 -translate-y-1/2 text-gray-400' />
-            <input
-              type='text'
-              placeholder='搜索电影、电视剧...'
-              className='search-input w-full pl-12 pr-20 py-3 bg-transparent rounded-full text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none text-sm'
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && e.currentTarget.value.trim()) {
-                  window.location.href = `/search?q=${encodeURIComponent(e.currentTarget.value.trim())}`;
-                }
-              }}
-            />
-            <button
-              onClick={() => {
-                const input = document.querySelector<HTMLInputElement>('.search-input');
-                if (input?.value.trim()) {
-                  window.location.href = `/search?q=${encodeURIComponent(input.value.trim())}`;
-                }
-              }}
-                className='absolute right-1.5 top-1/2 -translate-y-1/2 px-5 py-1.5 bg-white dark:bg-gray-800 text-green-500 font-semibold rounded-full text-sm hover:scale-105 active:scale-95 transition-all duration-300 shadow-lg shadow-green-500/20 hover:shadow-green-500/40'
-            >
-              搜索
-            </button>
-          </div>
+      {/* 搜索框 */}
+      <div className='px-4 sm:px-6 mb-4'>
+        <div className='max-w-2xl mx-auto'>
+          <Link
+            href='/search'
+            className='flex items-center rounded-full border-2 border-green-500/40 bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg px-5 py-3 hover:border-green-500 shadow-lg shadow-green-500/10 transition-all duration-300'
+          >
+            <SearchIcon className='w-5 h-5 text-green-500 mr-3 flex-shrink-0' />
+            <span className='text-gray-400 dark:text-gray-500 flex-1 truncate'>
+              搜索影视作品...
+            </span>
+          </Link>
         </div>
       </div>
       {/* TMDB 热门轮播图 */}
@@ -937,6 +921,51 @@ function HomeClient() {
               >
                 <LinkIcon size={18} />
               </button>
+
+              {musicEnabled && (
+                <Link href='/music' prefetch={false}>
+                  <button
+                    className='p-1.5 rounded-lg text-green-500 hover:text-green-600 transition-colors'
+                    title='音乐视听'
+                  >
+                    <Music size={18} />
+                  </button>
+                </Link>
+              )}
+
+              {mangaEnabled && (
+                <Link href='/manga' prefetch={false}>
+                  <button
+                    className='p-1.5 rounded-lg text-emerald-500 hover:text-emerald-600 transition-colors'
+                    title='漫画展馆'
+                  >
+                    <BookOpen size={18} />
+                  </button>
+                </Link>
+              )}
+
+              {booksEnabled && (
+                <Link href='/books' prefetch={false}>
+                  <button
+                    className='p-1.5 rounded-lg text-amber-500 hover:text-amber-600 transition-colors'
+                    title='电子书馆'
+                  >
+                    <BookMarked size={18} />
+                  </button>
+                </Link>
+              )}
+
+              {/* 源站寻片入口 */}
+              {sourceSearchEnabled && (
+                <Link href='/source-search'>
+                  <button
+                    className='p-2 rounded-lg text-blue-500 hover:text-blue-600 transition-colors'
+                    title='源站寻片'
+                  >
+                    <ListVideo size={20} />
+                  </button>
+                </Link>
+              )}
 
               {/* AI问片入口 */}
               {aiEnabled && (

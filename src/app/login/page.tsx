@@ -1,10 +1,9 @@
-﻿/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 'use client';
 
 import { AlertCircle, CheckCircle, Eye, EyeOff, Send, User, Lock } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import Link from 'next/link';
 import { Suspense, useEffect, useState } from 'react';
 
 import { CURRENT_VERSION } from '@/lib/version';
@@ -36,7 +35,7 @@ function VersionDisplay() {
   return (
     <button
       onClick={() =>
-        window.open('https://github.com/mtvpls/MoviePlus', '_blank')
+        window.open('https://github.com/levin201/Movie-Plus', '_blank')
       }
       className='absolute bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 transition-colors cursor-pointer'
     >
@@ -445,17 +444,20 @@ function LoginPageClient() {
           >
             {loading ? '登录中...' : '登录'}
           </button>
-        </form>
 
-        {/* 注册按钮 */}
-        <div className='text-center mt-4'>
-          <Link
-            href='/register'
-            className='text-sm text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 transition-colors'
-          >
-            还没有账号？立即注册
-          </Link>
-        </div>
+          {/* 注册按钮 */}
+          {siteConfig?.EnableRegistration && (
+            <div className='text-center'>
+              <button
+                type='button'
+                onClick={() => router.push('/register')}
+                className='text-sm text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 transition-colors'
+              >
+                还没有账号？立即注册
+              </button>
+            </div>
+          )}
+        </form>
 
         {/* 第三方登录区域 */}
         {shouldAskUsername && (telegramLoginEnabled || siteConfig?.EnableOIDCLogin) && (

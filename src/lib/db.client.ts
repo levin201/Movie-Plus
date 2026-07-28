@@ -92,18 +92,18 @@ interface UserCacheStore {
 }
 
 // ---- 常量 ----
-const PLAY_RECORDS_KEY = 'MovieTV_play_records';
-const FAVORITES_KEY = 'MovieTV_favorites';
-const MANGA_SHELF_KEY = 'MovieTV_manga_shelf';
-const MANGA_HISTORY_KEY = 'MovieTV_manga_history';
+const PLAY_RECORDS_KEY = 'movie_play_records';
+const FAVORITES_KEY = 'movie_favorites';
+const MANGA_SHELF_KEY = 'movie_manga_shelf';
+const MANGA_HISTORY_KEY = 'movie_manga_history';
 const DEFAULT_MAX_MANGA_HISTORY_RECORDS = 100;
 const DEFAULT_MAX_MANGA_HISTORY_THRESHOLD =
   DEFAULT_MAX_MANGA_HISTORY_RECORDS + 10;
-const SEARCH_HISTORY_KEY = 'MovieTV_search_history';
-const MUSIC_PLAY_RECORDS_KEY = 'MovieTV_music_play_records';
+const SEARCH_HISTORY_KEY = 'movie_search_history';
+const MUSIC_PLAY_RECORDS_KEY = 'movie_music_play_records';
 
 // 缓存相关常量
-const CACHE_PREFIX = 'MovieTV_cache_';
+const CACHE_PREFIX = 'movie_cache_';
 const CACHE_VERSION = '1.0.0';
 const CACHE_EXPIRE_TIME = 60 * 60 * 1000; // 一小时缓存过期
 
@@ -260,7 +260,7 @@ class HybridCacheManager {
   private clearAllCache(): void {
     const keys = Object.keys(localStorage);
     keys.forEach((key) => {
-      if (key.startsWith('MovieTV_cache_')) {
+      if (key.startsWith('movie_cache_')) {
         localStorage.removeItem(key);
       }
     });
@@ -2274,7 +2274,7 @@ export async function getSkipConfig(
 
   // localStorage 模式
   try {
-    const raw = localStorage.getItem('MovieTV_skip_configs');
+    const raw = localStorage.getItem('movie_skip_configs');
     if (!raw) return null;
     const configs = JSON.parse(raw) as Record<string, SkipConfig>;
     return configs[key] || null;
@@ -2333,10 +2333,10 @@ export async function saveSkipConfig(
   }
 
   try {
-    const raw = localStorage.getItem('MovieTV_skip_configs');
+    const raw = localStorage.getItem('movie_skip_configs');
     const configs = raw ? (JSON.parse(raw) as Record<string, SkipConfig>) : {};
     configs[key] = config;
-    localStorage.setItem('MovieTV_skip_configs', JSON.stringify(configs));
+    localStorage.setItem('movie_skip_configs', JSON.stringify(configs));
     window.dispatchEvent(
       new CustomEvent('skipConfigsUpdated', {
         detail: configs,
@@ -2403,7 +2403,7 @@ export async function getAllSkipConfigs(): Promise<Record<string, SkipConfig>> {
 
   // localStorage 模式
   try {
-    const raw = localStorage.getItem('MovieTV_skip_configs');
+    const raw = localStorage.getItem('movie_skip_configs');
     if (!raw) return {};
     return JSON.parse(raw) as Record<string, SkipConfig>;
   } catch (err) {
@@ -2456,11 +2456,11 @@ export async function deleteSkipConfig(
   }
 
   try {
-    const raw = localStorage.getItem('MovieTV_skip_configs');
+    const raw = localStorage.getItem('movie_skip_configs');
     if (raw) {
       const configs = JSON.parse(raw) as Record<string, SkipConfig>;
       delete configs[key];
-      localStorage.setItem('MovieTV_skip_configs', JSON.stringify(configs));
+      localStorage.setItem('movie_skip_configs', JSON.stringify(configs));
       window.dispatchEvent(
         new CustomEvent('skipConfigsUpdated', {
           detail: configs,
@@ -2528,7 +2528,7 @@ export async function getDanmakuFilterConfig(): Promise<DanmakuFilterConfig | nu
 
   // localStorage 模式
   try {
-    const raw = localStorage.getItem('MovieTV_danmaku_filter_config');
+    const raw = localStorage.getItem('movie_danmaku_filter_config');
     if (!raw) return null;
     return JSON.parse(raw) as DanmakuFilterConfig;
   } catch (err) {
@@ -2581,7 +2581,7 @@ export async function saveDanmakuFilterConfig(
 
   try {
     localStorage.setItem(
-      'MovieTV_danmaku_filter_config',
+      'movie_danmaku_filter_config',
       JSON.stringify(config)
     );
     window.dispatchEvent(
@@ -2842,7 +2842,7 @@ export async function getEpisodeFilterConfig(): Promise<EpisodeFilterConfig | nu
   }
 
   try {
-    const raw = localStorage.getItem('MovieTV_episode_filter_config');
+    const raw = localStorage.getItem('movie_episode_filter_config');
     if (!raw) return null;
     return normalizeEpisodeFilterConfig(JSON.parse(raw) as EpisodeFilterConfig);
   } catch (err) {
@@ -2865,7 +2865,7 @@ export async function saveEpisodeFilterConfig(
   try {
     const normalizedConfig = normalizeEpisodeFilterConfig(config);
     localStorage.setItem(
-      'MovieTV_episode_filter_config',
+      'movie_episode_filter_config',
       JSON.stringify(normalizedConfig)
     );
     window.dispatchEvent(

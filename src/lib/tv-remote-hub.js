@@ -1,4 +1,4 @@
-﻿const HUB_KEY = '__MovieTVRemoteHub';
+const HUB_KEY = '__movieRemoteHub';
 
 function getGlobalHub() {
   if (!globalThis[HUB_KEY]) {

@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
 
   const storageType = process.env.NEXT_PUBLIC_STORAGE_TYPE || 'localstorage';
 
-  const isLiteMode = process.env.MOVIE_LITE === 'true';
+  const isLiteMode = process.env.MOVIEPLUS_LITE === 'true';
 
   // Lite 镜像不暴露内置观影室能力，避免前端尝试连接本地 Socket.IO 服务
   // 注意：不要暴露 externalServerAuth 到前端，这是敏感凭据
@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
   // 如果使用 localStorage，返回默认配置
   if (storageType === 'localstorage') {
     return NextResponse.json({
-      SiteName: process.env.NEXT_PUBLIC_SITE_NAME || 'MoviePlus',
+      SiteName: process.env.NEXT_PUBLIC_SITE_NAME || 'Movie-Plus',
       StorageType: 'localstorage',
       Version: CURRENT_VERSION,
       TVModeEnabled: process.env.ENABLE_TV_MODE !== 'false',

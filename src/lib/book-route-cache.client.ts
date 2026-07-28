@@ -1,8 +1,8 @@
-'use client';
+﻿'use client';
 
 import { BookAcquisitionLink, BookDetail, BookListItem, BookReadRecord, BookShelfItem } from './book.types';
 
-const BOOK_ROUTE_CACHE_KEY = 'moontv_books_route_cache_v1';
+const BOOK_ROUTE_CACHE_KEY = 'movie_books_route_cache_v1';
 const MAX_CACHE_ITEMS = 300;
 
 export interface BookRouteCacheItem {

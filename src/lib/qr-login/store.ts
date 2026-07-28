@@ -21,11 +21,11 @@ type QrLoginStorageAdapter = {
 };
 type QrLoginStorage = { adapter?: QrLoginStorageAdapter };
 
-type GlobalWithQr = typeof globalThis & { __MovieTVQrLoginStore?: Map<string, QrLoginSession> };
+type GlobalWithQr = typeof globalThis & { __movieQrLoginStore?: Map<string, QrLoginSession> };
 
 const g = globalThis as GlobalWithQr;
-export const qrLoginStore = g.__MovieTVQrLoginStore || new Map<string, QrLoginSession>();
-g.__MovieTVQrLoginStore = qrLoginStore;
+export const qrLoginStore = g.__movieQrLoginStore || new Map<string, QrLoginSession>();
+g.__movieQrLoginStore = qrLoginStore;
 
 const QR_LOGIN_HASH_KEY = 'qr_login_sessions';
 const VALID_STORE_MODES = new Set<QrLoginStoreMode>(['auto', 'memory', 'hybrid', 'shared']);

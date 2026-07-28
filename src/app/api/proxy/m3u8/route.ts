@@ -11,7 +11,7 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const url = searchParams.get('url');
   const allowCORS = searchParams.get('allowCORS') === 'true';
-  const source = searchParams.get('MovieTV-source');
+  const source = searchParams.get('movie-source');
   if (!url) {
     return NextResponse.json({ error: 'Missing url' }, { status: 400 });
   }
@@ -110,9 +110,9 @@ function rewriteM3U8Content(content: string, baseUrl: string, req: Request, allo
   const host = req.headers.get('host');
   const proxyBase = `${protocol}://${host}/api/proxy`;
 
-  // 获取 MovieTV-source 参数
+  // 获取 movie-source 参数
   const reqUrl = new URL(req.url);
-  const source = reqUrl.searchParams.get('MovieTV-source') || '';
+  const source = reqUrl.searchParams.get('movie-source') || '';
 
   const lines = content.split('\n');
   const rewrittenLines: string[] = [];
@@ -123,7 +123,7 @@ function rewriteM3U8Content(content: string, baseUrl: string, req: Request, allo
     // 处理 TS 片段 URL 和其他媒体文件
     if (line && !line.startsWith('#')) {
       const resolvedUrl = resolveUrl(baseUrl, line);
-      const proxyUrl = allowCORS ? resolvedUrl : `${proxyBase}/segment?url=${encodeURIComponent(resolvedUrl)}&MovieTV-source=${source}`;
+      const proxyUrl = allowCORS ? resolvedUrl : `${proxyBase}/segment?url=${encodeURIComponent(resolvedUrl)}&movie-source=${source}`;
       rewrittenLines.push(proxyUrl);
       continue;
     }
@@ -147,7 +147,7 @@ function rewriteM3U8Content(content: string, baseUrl: string, req: Request, allo
         const nextLine = lines[i].trim();
         if (nextLine && !nextLine.startsWith('#')) {
           const resolvedUrl = resolveUrl(baseUrl, nextLine);
-          const proxyUrl = `${proxyBase}/m3u8?url=${encodeURIComponent(resolvedUrl)}&MovieTV-source=${source}`;
+          const proxyUrl = `${proxyBase}/m3u8?url=${encodeURIComponent(resolvedUrl)}&movie-source=${source}`;
           rewrittenLines.push(proxyUrl);
         } else {
           rewrittenLines.push(nextLine);
@@ -167,7 +167,7 @@ function rewriteMapUri(line: string, baseUrl: string, proxyBase: string, allowCO
   if (uriMatch) {
     const originalUri = uriMatch[1];
     const resolvedUrl = resolveUrl(baseUrl, originalUri);
-    const proxyUrl = allowCORS ? resolvedUrl : `${proxyBase}/segment?url=${encodeURIComponent(resolvedUrl)}&MovieTV-source=${source}`;
+    const proxyUrl = allowCORS ? resolvedUrl : `${proxyBase}/segment?url=${encodeURIComponent(resolvedUrl)}&movie-source=${source}`;
     return line.replace(uriMatch[0], `URI="${proxyUrl}"`);
   }
   return line;
@@ -178,7 +178,7 @@ function rewriteKeyUri(line: string, baseUrl: string, proxyBase: string, allowCO
   if (uriMatch) {
     const originalUri = uriMatch[1];
     const resolvedUrl = resolveUrl(baseUrl, originalUri);
-    const proxyUrl = allowCORS ? resolvedUrl : `${proxyBase}/key?url=${encodeURIComponent(resolvedUrl)}&MovieTV-source=${source}`;
+    const proxyUrl = allowCORS ? resolvedUrl : `${proxyBase}/key?url=${encodeURIComponent(resolvedUrl)}&movie-source=${source}`;
     return line.replace(uriMatch[0], `URI="${proxyUrl}"`);
   }
   return line;

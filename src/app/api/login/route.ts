@@ -154,7 +154,7 @@ function getDeviceInfo(request: NextRequest): string {
   const userAgent = request.headers.get('user-agent') || 'Unknown';
 
   // 检查是否为 MoviePlus APP
-  if (userAgent.toLowerCase().includes('MoviePlus')) {
+  if (userAgent.toLowerCase().includes('movieplus')) {
     return 'MoviePlus APP';
   }
 
@@ -385,7 +385,7 @@ export async function POST(req: NextRequest) {
 
     return response;
   } catch (error) {
-    console.error('登录接口异常', error, error instanceof Error ? error.stack : '');
+    console.error('登录接口异常', error);
     return NextResponse.json({ error: '服务器错误' }, { status: 500 });
   }
 }

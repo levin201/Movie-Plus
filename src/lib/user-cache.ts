@@ -102,7 +102,7 @@ class OwnerExistenceCache {
 }
 
 // 全局单例
-const globalKey = Symbol.for('__MovieTV_USER_INFO_CACHE__');
+const globalKey = Symbol.for('__MOVIEPLUS_USER_INFO_CACHE__');
 let _userInfoCache: UserInfoCache | undefined = (global as any)[globalKey];
 
 if (!_userInfoCache) {
@@ -117,7 +117,7 @@ if (!_userInfoCache) {
 
 export const userInfoCache = _userInfoCache as UserInfoCache;
 
-const ownerExistenceGlobalKey = Symbol.for('__MovieTV_OWNER_EXISTENCE_CACHE__');
+const ownerExistenceGlobalKey = Symbol.for('__MOVIEPLUS_OWNER_EXISTENCE_CACHE__');
 let _ownerExistenceCache: OwnerExistenceCache | undefined = (global as any)[ownerExistenceGlobalKey];
 
 if (!_ownerExistenceCache) {

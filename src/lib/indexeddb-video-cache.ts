@@ -1,13 +1,13 @@
-/**
+﻿/**
  * IndexedDB 视频缓存（独立库）
  *
- * 注意：视频分片/播放列表不存入现有 MoonTVPlus 元信息库，避免大体积 Blob
+ * 注意：视频分片/播放列表不存入现有 MoviePlus 元信息库，避免大体积 Blob
  * 与任务/用户元信息混在一起。
  */
 
-export const INDEXEDDB_VIDEO_CACHE_DB_NAME = 'MoonTVPlusVideoCache';
+export const INDEXEDDB_VIDEO_CACHE_DB_NAME = 'MoviePlusVideoCache';
 export const INDEXEDDB_VIDEO_CACHE_DB_VERSION = 1;
-export const INDEXEDDB_VIDEO_CACHE_ROUTE_PREFIX = '/__moontv_idb_video__';
+export const INDEXEDDB_VIDEO_CACHE_ROUTE_PREFIX = '/__movie_idb_video__';
 
 const MANIFESTS_STORE = 'manifests';
 const SEGMENTS_STORE = 'segments';

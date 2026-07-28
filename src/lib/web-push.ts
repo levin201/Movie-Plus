@@ -35,8 +35,8 @@ export interface WebPushDispatchResult {
   deliveries: WebPushDeliveryResult[];
 }
 
-const globalVapidCacheKey = Symbol.for('__MovieTV_WEB_PUSH_VAPID_KEYS__');
-const globalVapidPromiseKey = Symbol.for('__MovieTV_WEB_PUSH_VAPID_KEYS_PROMISE__');
+const globalVapidCacheKey = Symbol.for('__MOVIEPLUS_WEB_PUSH_VAPID_KEYS__');
+const globalVapidPromiseKey = Symbol.for('__MOVIEPLUS_WEB_PUSH_VAPID_KEYS_PROMISE__');
 
 function getCachedVapidKeys(): VapidKeys | null {
   return ((globalThis as any)[globalVapidCacheKey] as VapidKeys | undefined) || null;

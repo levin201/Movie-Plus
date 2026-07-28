@@ -60,7 +60,7 @@ jobs:
         uses: docker/metadata-action@v5
 
         with:
-          images: ghcr.io/mtvpls/MoviePlus
+          images: ghcr.io/levin201/movie-plus
           tags: |
             type=raw,value=${{ github.event.inputs.tag || 'latest' }},enable={{is_default_branch}}
 
@@ -72,8 +72,8 @@ jobs:
           file: ./Dockerfile
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
-          tags: ghcr.io/mtvpls/MoviePlus:${{ github.event.inputs.tag || 'latest' }}
-          outputs: type=image,name=ghcr.io/mtvpls/MoviePlus,name-canonical=true,push=true
+          tags: ghcr.io/levin201/movie-plus:${{ github.event.inputs.tag || 'latest' }}
+          outputs: type=image,name=ghcr.io/levin201/movie-plus,name-canonical=true,push=true
 
       - name: Export digest
         run: |
@@ -118,8 +118,8 @@ jobs:
       - name: Create manifest list and push
         working-directory: /tmp/digests
         run: |
-          docker buildx imagetools create -t ghcr.io/mtvpls/MoviePlus:${{ github.event.inputs.tag || 'latest' }} \
-            $(printf 'ghcr.io/mtvpls/MoviePlus@sha256:%s ' *)
+          docker buildx imagetools create -t ghcr.io/levin201/movie-plus:${{ github.event.inputs.tag || 'latest' }} \
+            $(printf 'ghcr.io/levin201/movie-plus@sha256:%s ' *)
 
   cleanup-refresh:
     runs-on: ubuntu-latest

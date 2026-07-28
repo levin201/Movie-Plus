@@ -6466,11 +6466,11 @@ const EmbyConfigComponent = ({
                       embyAuthorizationHeader: e.target.value,
                     })
                   }
-                  placeholder='留空使用默认 MoviePlus 认证头'
+                  placeholder='留空使用默认 Movie-Plus 认证头'
                   className='w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white text-sm'
                 />
                 <p className='text-xs text-gray-500 dark:text-gray-400 mt-1'>
-                  仅用于账号认证登录请求，示例：MediaBrowser Client=&quot;MoviePlus&quot;, Device=&quot;Web&quot;, DeviceId=&quot;MoviePlus-web&quot;, Version=&quot;1.0.0&quot;
+                  仅用于账号认证登录请求，示例：MediaBrowser Client=&quot;movieplus&quot;, Device=&quot;Web&quot;, DeviceId=&quot;movieplus-web&quot;, Version=&quot;1.0.0&quot;
                 </p>
               </div>
             </div>
@@ -7937,7 +7937,7 @@ const VideoSourceConfig = ({
                     客户端去广告配置
                   </h3>
                   <p className='mt-1 text-sm text-gray-600 dark:text-gray-400'>
-                    勾选后，用户使用 MoviePlus APP 或 OrionTV 观看这些视频源时，会自动过滤片头/插播广告。
+                    勾选后，用户使用 Movie-Plus APP 或 OrionTV 观看这些视频源时，会自动过滤片头/插播广告。
                   </p>
                 </div>
                 <button
@@ -16199,7 +16199,7 @@ const AIConfigComponent = ({
               value={defaultMessageNoVideo}
               onChange={(e) => setDefaultMessageNoVideo(e.target.value)}
               rows={3}
-              placeholder='例如：你好！我是MoviePlus的AI影视助手。想看什么电影或剧集？需要推荐吗？'
+              placeholder='例如：你好！我是Movie-Plus的AI影视助手。想看什么电影或剧集？需要推荐吗？'
               className='w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100'
             />
             <p className='mt-2 text-sm text-gray-600 dark:text-gray-400'>
@@ -16355,7 +16355,7 @@ const MusicConfigComponent = ({
             • 音乐功能基于 lxserver 提供搜索、热搜、榜单、歌词与播放解析能力
           </p>
           <p>
-            • 建议填写服务端 Base URL 与持久 Token，由 MovieTV 服务端代为访问
+            • 建议填写服务端 Base URL 与持久 Token，由 Movie-Plus 服务端代为访问
             lxserver
           </p>
           <p>

@@ -1,4 +1,4 @@
-const EPISODE_PROGRESS_PREFIX = 'moontv_episode_progress:';
+﻿const EPISODE_PROGRESS_PREFIX = 'movie_episode_progress:';
 const EPISODE_PROGRESS_MAX_SHOWS = 20;
 const EPISODE_PROGRESS_MAX_AGE_MS = 1000 * 60 * 60 * 24 * 120;
 

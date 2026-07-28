@@ -116,6 +116,11 @@ const PageLayout = ({ children, activePath = '/', hideNavigation = false }: Page
           </div>
         </div>
 
+        {/* 保持 UserMenu 挂载以处理侧边栏事件 */}
+        <div className='hidden'>
+          <UserMenu />
+        </div>
+
         {/* 移动端底部导航 */}
         {!hideNavigation && (
           <div className='md:hidden'>

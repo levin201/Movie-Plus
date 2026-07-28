@@ -109,7 +109,7 @@ function getRequestSiteOrigin(request: NextRequest): string {
 
 /**
  * MoviePlus APP / OrionTV 客户端：对配置的视频源 m3u8 套一层去广告代理。
- * UA 小写包含 "MoviePlus app" 或 "oriontv" 时生效（不匹配仅含 MoviePlus 的其它客户端）。
+ * UA 小写包含 "movieplus app" 或 "oriontv" 时生效（不匹配仅含 movieplus 的其它客户端）。
  */
 function applyClientAdProxyToEpisodes(
   request: NextRequest,
@@ -123,7 +123,7 @@ function applyClientAdProxyToEpisodes(
   }
 
   const ua = (request.headers.get('user-agent') || '').toLowerCase();
-  if (!ua.includes('MoviePlus app') && !ua.includes('oriontv')) {
+  if (!ua.includes('movieplus app') && !ua.includes('oriontv')) {
     return episodes;
   }
 

@@ -84,7 +84,7 @@ class LockManager {
 }
 
 // 全局单例
-const globalKey = Symbol.for('__MovieTV_LOCK_MANAGER__');
+const globalKey = Symbol.for('__MOVIEPLUS_LOCK_MANAGER__');
 let _lockManager: LockManager | undefined = (global as any)[globalKey];
 
 if (!_lockManager) {

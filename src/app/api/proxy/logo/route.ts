@@ -9,7 +9,7 @@ export const runtime = 'nodejs';
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const imageUrl = searchParams.get('url');
-  const source = searchParams.get('MovieTV-source') || searchParams.get('source');
+  const source = searchParams.get('movie-source') || searchParams.get('source');
 
   if (!imageUrl) {
     return NextResponse.json({ error: 'Missing image URL' }, { status: 400 });

@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 import type { AdminConfig } from '@/lib/admin.types';
 import { getAuthInfoFromCookie } from '@/lib/auth';
@@ -119,7 +119,7 @@ export async function POST(request: NextRequest) {
         ? overrideConfig.botToken
         : savedConfig.botToken;
 
-    const siteName = (await getConfig()).SiteConfig.SiteName || 'MoviePlus';
+    const siteName = (await getConfig()).SiteConfig.SiteName || 'Movie-Plus';
     await sendTelegramMessage(
       String(testChatId),
       `${siteName} Telegram Bot 测试消息发送成功。`,

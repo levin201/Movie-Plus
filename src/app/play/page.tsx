@@ -10147,8 +10147,8 @@ function PlayPageClient() {
                             e.preventDefault();
                             // 获取当前浏览器URL去除域名部分，并去除开头的/
                             const currentPath = (window.location.pathname + window.location.search).replace(/^\//, '');
-                            // 打开MoviePlus协议
-                            window.open(`MoviePlus://${currentPath}`, '_blank');
+                            // 打开movieplus协议
+                            window.open(`movieplus://${currentPath}`, '_blank');
                           }}
                           className='group relative flex items-center justify-center gap-1 w-8 h-8 lg:w-auto lg:h-auto lg:px-2 lg:py-1.5 bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-xs font-medium rounded-md transition-all duration-200 shadow-sm hover:shadow-md cursor-pointer overflow-hidden border border-blue-600 dark:border-blue-700 flex-shrink-0'
                           title='App打开'

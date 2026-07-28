@@ -1,9 +1,9 @@
-'use client';
+﻿'use client';
 
 import { BookTtsProgress } from './book.types';
 import { generateStorageKey } from './db.client';
 
-const BOOK_TTS_PROGRESS_KEY = 'moontv_book_tts_progress';
+const BOOK_TTS_PROGRESS_KEY = 'movie_book_tts_progress';
 
 function readAll(): Record<string, BookTtsProgress> {
   if (typeof window === 'undefined') return {};

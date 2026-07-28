@@ -59,7 +59,7 @@ async function resolveLiveUrl(rawUrl: string, source?: LiveSource | null): Promi
       type: 'm3u8',
       url: proxyMode === 'direct'
         ? rawUrl
-        : `/api/proxy/m3u8?url=${encodeURIComponent(rawUrl)}&MovieTV-source=${encodeURIComponent(source?.key || '')}${proxyMode === 'm3u8-only' ? '&allowCORS=true' : ''}`,
+        : `/api/proxy/m3u8?url=${encodeURIComponent(rawUrl)}&movie-source=${encodeURIComponent(source?.key || '')}${proxyMode === 'm3u8-only' ? '&allowCORS=true' : ''}`,
     };
   }
   if (sourceType === 'flv') return { type: 'flv', url: rawUrl };
@@ -68,7 +68,7 @@ async function resolveLiveUrl(rawUrl: string, source?: LiveSource | null): Promi
   if (!source?.key) throw new Error('未知直播流格式');
 
   const precheckRes = await fetch(
-    `/api/live/precheck?url=${encodeURIComponent(rawUrl)}&MovieTV-source=${encodeURIComponent(source.key)}`,
+    `/api/live/precheck?url=${encodeURIComponent(rawUrl)}&movie-source=${encodeURIComponent(source.key)}`,
     { cache: 'no-store' }
   );
   if (!precheckRes.ok) throw new Error('不支持的直播流格式');
@@ -81,7 +81,7 @@ async function resolveLiveUrl(rawUrl: string, source?: LiveSource | null): Promi
       type: 'm3u8',
       url: proxyMode === 'direct'
         ? rawUrl
-        : `/api/proxy/m3u8?url=${encodeURIComponent(rawUrl)}&MovieTV-source=${encodeURIComponent(source.key)}${proxyMode === 'm3u8-only' ? '&allowCORS=true' : ''}`,
+        : `/api/proxy/m3u8?url=${encodeURIComponent(rawUrl)}&movie-source=${encodeURIComponent(source.key)}${proxyMode === 'm3u8-only' ? '&allowCORS=true' : ''}`,
     };
   }
 
@@ -279,7 +279,7 @@ function TVLivePlayClient() {
   const precheckChannel = async (next: LiveChannel) => {
     if (!source) return;
     try {
-      await fetch(`/api/live/precheck?url=${encodeURIComponent(next.url)}&MovieTV-source=${encodeURIComponent(source.key)}`, { cache: 'no-store' });
+      await fetch(`/api/live/precheck?url=${encodeURIComponent(next.url)}&movie-source=${encodeURIComponent(source.key)}`, { cache: 'no-store' });
     } catch {
       // 预检查失败不阻止切台，播放器错误层会给出重试/换台。
     }

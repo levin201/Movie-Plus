@@ -1,7 +1,7 @@
-﻿import { Metadata } from 'next';
+import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: '安全警告 - MoviePlus',
+  title: '安全警告 - Movie-Plus',
   description: '站点安全配置警告',
 };
 

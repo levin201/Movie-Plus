@@ -41,7 +41,7 @@ function getDeviceInfo(userAgent: string): string {
   const ua = userAgent.toLowerCase();
 
   // 检查是否为 MoviePlus APP
-  if (ua.includes('MoviePlus')) {
+  if (ua.includes('movieplus')) {
     return 'MoviePlus APP';
   }
 

@@ -10,7 +10,7 @@ export class RedisStorage extends BaseRedisStorage {
       url: process.env.REDIS_URL!,
       clientName: 'Redis'
     };
-    const globalSymbol = Symbol.for('__MovieTV_REDIS_CLIENT__');
+    const globalSymbol = Symbol.for('__MOVIEPLUS_REDIS_CLIENT__');
     const client = createRedisClient(config, globalSymbol);
     const adapter = new StandardRedisAdapter(client);
     const withRetry = createRetryWrapper(config.clientName, () => client);

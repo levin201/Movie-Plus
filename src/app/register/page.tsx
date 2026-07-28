@@ -1,4 +1,4 @@
-﻿/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 'use client';
 
@@ -35,7 +35,7 @@ function VersionDisplay() {
   return (
     <button
       onClick={() =>
-        window.open('https://github.com/mtvpls/MoviePlus', '_blank')
+        window.open('https://github.com/levin201/Movie-Plus', '_blank')
       }
       className='absolute bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 transition-colors cursor-pointer'
     >
@@ -248,8 +248,14 @@ function RegisterPageClient() {
     }
   };
 
-  // 直接显示注册表单
-  const isConfigured = siteConfig !== null || typeof window === 'undefined';
+  // 如果配置未加载或未开启注册，显示加载中
+  if (!siteConfig) {
+    return (
+      <div className='relative min-h-screen flex items-center justify-center px-4'>
+        <div className='text-gray-500 dark:text-gray-400'>加载中...</div>
+      </div>
+    );
+  }
 
   return (
     <div

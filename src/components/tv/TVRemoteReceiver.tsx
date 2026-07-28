@@ -13,8 +13,8 @@ import type {
   TVRemoteTextCommand,
 } from '@/lib/tv-remote-types';
 
-const DEVICE_ID_KEY = 'MovieTV_tv_remote_device_id';
-const LOCAL_REMOTE_URL_KEY = 'MovieTV_local_remote_url';
+const DEVICE_ID_KEY = 'movie_tv_remote_device_id';
+const LOCAL_REMOTE_URL_KEY = 'movie_local_remote_url';
 
 type TVRemoteReceiverSingleton = {
   socket: Socket | null;
@@ -59,8 +59,8 @@ export default function TVRemoteReceiver() {
         const url = decodeURIComponent(match[1]);
         if (url.startsWith('http://') || url.startsWith('https://')) {
           localStorage.setItem(LOCAL_REMOTE_URL_KEY, url);
-          window.__MovieTV_LOCAL_REMOTE_URL = url;
-          window.dispatchEvent(new CustomEvent('MovieTV:local-remote-info', {
+          window.__MOVIEPLUS_LOCAL_REMOTE_URL = url;
+          window.dispatchEvent(new CustomEvent('movie:local-remote-info', {
             detail: { url },
           }));
         }
@@ -83,15 +83,15 @@ export default function TVRemoteReceiver() {
 
     syncLocalRemoteUrl();
     window.addEventListener('hashchange', syncLocalRemoteUrl);
-    window.addEventListener('MovieTV:local-remote-key', onLocalRemoteKey);
-    window.addEventListener('MovieTV:local-remote-text', onLocalRemoteText);
+    window.addEventListener('movie:local-remote-key', onLocalRemoteKey);
+    window.addEventListener('movie:local-remote-text', onLocalRemoteText);
 
     const auth = getAuthInfoFromBrowserCookie();
     if (!auth?.username) {
       return () => {
         window.removeEventListener('hashchange', syncLocalRemoteUrl);
-        window.removeEventListener('MovieTV:local-remote-key', onLocalRemoteKey);
-        window.removeEventListener('MovieTV:local-remote-text', onLocalRemoteText);
+        window.removeEventListener('movie:local-remote-key', onLocalRemoteKey);
+        window.removeEventListener('movie:local-remote-text', onLocalRemoteText);
       };
     }
 
@@ -160,8 +160,8 @@ export default function TVRemoteReceiver() {
       document.removeEventListener('visibilitychange', onVisibilityChange);
       window.removeEventListener('focus', updateState);
       window.removeEventListener('hashchange', syncLocalRemoteUrl);
-      window.removeEventListener('MovieTV:local-remote-key', onLocalRemoteKey);
-      window.removeEventListener('MovieTV:local-remote-text', onLocalRemoteText);
+      window.removeEventListener('movie:local-remote-key', onLocalRemoteKey);
+      window.removeEventListener('movie:local-remote-text', onLocalRemoteText);
       socket.off('connect', register);
       socket.off('tv-remote:key');
       socket.off('tv-remote:text');

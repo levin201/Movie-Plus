@@ -1,4 +1,4 @@
-﻿/* eslint-disable no-console,@typescript-eslint/no-explicit-any */
+/* eslint-disable no-console,@typescript-eslint/no-explicit-any */
 
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -604,7 +604,7 @@ async function refreshRecordAndFavorites() {
 
                 if (emailConfig?.enabled) {
                   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-                  const siteName = config?.SiteConfig?.SiteName || 'Movie';
+                  const siteName = config?.SiteConfig?.SiteName || 'Movie-Plus';
 
                   await EmailService.send(emailConfig, {
                     to: userEmail,
@@ -751,7 +751,7 @@ async function refreshRecordAndFavorites() {
 
                 if (emailConfig?.enabled) {
                   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-                  const siteName = config?.SiteConfig?.SiteName || 'Movie';
+                  const siteName = config?.SiteConfig?.SiteName || 'Movie-Plus';
 
                   await EmailService.send(emailConfig, {
                     to: userEmail,

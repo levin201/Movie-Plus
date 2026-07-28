@@ -1,4 +1,4 @@
-﻿/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { Bot, Loader2, Send, Sparkles, Trash2,X } from 'lucide-react';
@@ -223,7 +223,7 @@ export default function AIChatPanel({
   isOpen,
   onClose,
   context,
-  welcomeMessage = '你好！我是MoviePlus的AI影视助手，有什么可以帮你的吗？',
+  welcomeMessage = '你好！我是Movie-Plus的AI影视助手，有什么可以帮你的吗？',
   onStreamingChange,
   useDrawer = false,
   drawerWidth = 'w-full md:w-[25%]',

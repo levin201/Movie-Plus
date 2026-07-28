@@ -1,8 +1,8 @@
-﻿/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 'use client';
 
-import { Blend, Cat, Clover, Container, Film, Globe, Home, Menu, Search, Star, Tv, TvMinimalPlay, Users, Bell, Heart, Settings, Shield, Monitor, LogOut, LogIn } from 'lucide-react';
+import { Bell, Blend, Cat, Clover, Container, Film, Globe, Heart, Home, LayoutGrid, LogOut, Menu, Monitor, Settings, Shield, Star, Tv, TvMinimalPlay, User, Users } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import {
@@ -14,11 +14,9 @@ import {
   useState,
 } from 'react';
 
-import { getAuthInfoFromBrowserCookie } from '@/lib/auth';
-
 import { useSite } from './SiteProvider';
 import { useWatchRoomContextSafe } from './WatchRoomProvider';
-import { UserMenu } from './UserMenu';
+import { getAuthInfoFromBrowserCookie } from '@/lib/auth';
 
 interface SidebarContextType {
   isCollapsed: boolean;
@@ -81,16 +79,7 @@ const Sidebar = ({ onToggle, activePath = '/' }: SidebarProps) => {
     return false; // 默认展开
   });
 
-  const [loggedIn, setLoggedIn] = useState(false);
-
-  // 监听登录状态变化
-  useEffect(() => {
-    const check = () => setLoggedIn(!!getAuthInfoFromBrowserCookie()?.username);
-    check();
-    const id = setInterval(check, 1000);
-    window.addEventListener('focus', check);
-    return () => { clearInterval(id); window.removeEventListener('focus', check); };
-  }, []);
+  // 首次挂载时读取 localStorage，以便刷新后仍保持上次的折叠状态
   useLayoutEffect(() => {
     const saved = localStorage.getItem('sidebarCollapsed');
     if (saved !== null) {
@@ -164,6 +153,21 @@ const Sidebar = ({ onToggle, activePath = '/' }: SidebarProps) => {
       href: '/live',
     },
   ]);
+
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [username, setUsername] = useState('');
+
+  useEffect(() => {
+    const auth = getAuthInfoFromBrowserCookie();
+    if (auth) {
+      setIsLoggedIn(true);
+      setUsername(auth.username || '');
+      if (auth.role === 'owner' || auth.role === 'admin') {
+        setIsAdmin(true);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     const runtimeConfig = (window as any).RUNTIME_CONFIG;
@@ -245,42 +249,8 @@ const Sidebar = ({ onToggle, activePath = '/' }: SidebarProps) => {
       });
     }
 
-    // 用户功能入口 - 根据登录状态变化（每次渲染检查cookie）
-    const auth = getAuthInfoFromBrowserCookie();
-    if (auth?.username) {
-      items.push(
-        { icon: Bell, label: '通知中心', href: '#notifications' },
-        { icon: Heart, label: '我的收藏', href: '#favorites' },
-        { icon: Settings, label: '个人中心', href: '#settings' },
-        { icon: Monitor, label: '电视访问', href: '/tv' },
-        { icon: Shield, label: '管理面板', href: '/admin' },
-        { icon: Globe, label: '平台应用', href: '#eco' },
-      );
-    } else {
-      items.push(
-        { icon: LogIn, label: '登入', href: '/login' },
-      );
-    }
-
     setMenuItems(items);
-  }, [watchRoomContext?.isEnabled, loggedIn]);
-
-  // Handle hash-link clicks for UserMenu panels
-  useEffect(() => {
-    const handleHashClick = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const link = target.closest('a[href^="#"]');
-      if (!link) return;
-      const hash = link.getAttribute('href');
-      const win = window as any;
-      if (hash === '#notifications') { e.preventDefault(); win.__openNotifications?.(); }
-      if (hash === '#favorites') { e.preventDefault(); win.__openFavorites?.(); }
-      if (hash === '#settings') { e.preventDefault(); win.__openSettings?.(); }
-      if (hash === '#eco') { e.preventDefault(); win.__openEcoApps?.(); }
-    };
-    document.addEventListener('click', handleHashClick);
-    return () => document.removeEventListener('click', handleHashClick);
-  }, []);
+  }, [watchRoomContext?.isEnabled]);
 
   return (
     <SidebarContext.Provider value={contextValue}>
@@ -288,15 +258,11 @@ const Sidebar = ({ onToggle, activePath = '/' }: SidebarProps) => {
       <div className='hidden md:flex'>
         <aside
           data-sidebar
-          className={`fixed top-0 left-0 h-screen bg-white/95 backdrop-blur-xl transition-all duration-300 border-r border-gray-200 z-10 shadow-xl dark:bg-black/90 dark:border-white/10 ${isCollapsed ? 'w-16' : 'w-64'
+          className={`fixed top-0 left-0 h-screen bg-white/75 backdrop-blur-2xl transition-all duration-300 border-r border-white/40 z-10 shadow-xl dark:bg-gray-950/85 dark:border-white/10 ${isCollapsed ? 'w-16' : 'w-64'
             }`}
           style={{
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
-          }}
-          style={{
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
+            backdropFilter: 'blur(30px)',
+            WebkitBackdropFilter: 'blur(30px)',
           }}
         >
           <div className='flex h-full flex-col'>
@@ -308,8 +274,8 @@ const Sidebar = ({ onToggle, activePath = '/' }: SidebarProps) => {
               >
                 <div className='w-[calc(100%-4rem)] flex justify-center'>
                   {!isCollapsed && <Logo />}
-                </div>
               </div>
+            </div>
               <button
                 onClick={handleToggle}
                 className={`absolute top-1/2 -translate-y-1/2 flex items-center justify-center w-8 h-8 rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-100/50 transition-colors duration-200 z-10 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-700/50 ${isCollapsed ? 'left-1/2 -translate-x-1/2' : 'right-2'
@@ -319,21 +285,20 @@ const Sidebar = ({ onToggle, activePath = '/' }: SidebarProps) => {
               </button>
             </div>
 
-            {/* 首页和搜索导航 */}
+            {/* 首页导航 */}
             <nav className='px-2 mt-4 space-y-1'>
               <Link
                 href='/'
                 prefetch={false}
                 onClick={(e) => {
-                  // 确保点击事件立即生效，不被其他状态更新阻塞
                   e.currentTarget.blur();
                 }}
                 data-active={active === '/'}
-                className={`group flex items-center rounded-lg px-2 py-2 pl-4 text-gray-700 hover:bg-gray-100 hover:text-black data-[active=true]:bg-gray-100 data-[active=true]:text-black font-medium transition-colors duration-200 min-h-[40px] dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-white dark:data-[active=true]:bg-white/10 dark:data-[active=true]:text-white ${isCollapsed ? 'w-full max-w-none mx-0' : 'mx-0'
+                className={`group flex items-center rounded-lg px-2 py-2 pl-4 text-gray-700 hover:bg-gray-100/30 hover:text-gray-800 dark:hover:text-gray-100 data-[active=true]:bg-gray-200/70 dark:data-[active=true]:bg-gray-700/50 data-[active=true]:text-gray-800 dark:data-[active=true]:text-gray-100 font-medium transition-colors duration-200 min-h-[40px] dark:text-gray-300 dark:hover:text-gray-100 dark:data-[active=true]:bg-gray-700/50 dark:data-[active=true]:text-gray-100 ${isCollapsed ? 'w-full max-w-none mx-0' : 'mx-0'
                   } gap-3 justify-start`}
               >
                 <div className='w-4 h-4 flex items-center justify-center'>
-                  <Home className='h-4 w-4 text-gray-400 group-hover:text-black data-[active=true]:text-black dark:text-gray-500 dark:group-hover:text-white dark:data-[active=true]:text-white' />
+                  <Home className='h-4 w-4 text-gray-500 group-hover:text-gray-800 dark:hover:text-gray-100 data-[active=true]:text-gray-800 dark:data-[active=true]:text-gray-100 dark:text-gray-400 dark:group-hover:text-gray-200 dark:data-[active=true]:text-gray-100' />
                 </div>
                 {!isCollapsed && (
                   <span className='whitespace-nowrap transition-opacity duration-200 opacity-100'>
@@ -345,7 +310,7 @@ const Sidebar = ({ onToggle, activePath = '/' }: SidebarProps) => {
 
             {/* 菜单项 */}
             <div className='flex-1 overflow-y-auto px-2 pt-4'>
-              <div className='space-y-3'>
+              <div className='space-y-1'>
                 {menuItems.map((item) => {
                   // 检查当前路径是否匹配这个菜单项
                   const typeMatch = item.href.match(/type=([^&]+)/)?.[1];
@@ -370,30 +335,14 @@ const Sidebar = ({ onToggle, activePath = '/' }: SidebarProps) => {
                       key={item.label}
                       href={item.href}
                       data-active={isActive}
-                      onClick={(e) => {
-                        if (item.href.startsWith('#')) {
-                          e.preventDefault();
-                          const win = window as any;
-                          if (item.href === '#notifications') win.__openNotifications?.();
-                          if (item.href === '#favorites') win.__openFavorites?.();
-                          if (item.href === '#settings') win.__openSettings?.();
-                          if (item.href === '#eco') win.__openEcoApps?.();
-                        }
-                        if (item.href === '/api/logout') {
-                          e.preventDefault();
-                          fetch('/api/logout', { method: 'POST' }).then(() => {
-                            window.location.href = '/';
-                          });
-                        }
-                      }}
-                      className={`group flex items-center rounded-lg px-2 py-2.5 pl-4 text-[15px] text-gray-700 hover:bg-gray-100 hover:text-black data-[active=true]:bg-gray-100 data-[active=true]:text-black transition-colors duration-200 min-h-[44px] dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-white dark:data-[active=true]:bg-white/10 dark:data-[active=true]:text-white ${isCollapsed ? 'w-full max-w-none mx-0' : 'mx-0'
-                        } gap-3.5 justify-start`}
+                      className={`group flex items-center rounded-lg px-2 py-2 pl-4 text-sm text-gray-700 hover:bg-gray-100/30 hover:text-gray-800 dark:hover:text-gray-100 data-[active=true]:bg-gray-200/70 dark:data-[active=true]:bg-gray-700/50 data-[active=true]:text-gray-800 dark:data-[active=true]:text-gray-100 transition-colors duration-200 min-h-[40px] dark:text-gray-300 dark:hover:text-gray-100 dark:data-[active=true]:bg-gray-700/50 dark:data-[active=true]:text-gray-100 ${isCollapsed ? 'w-full max-w-none mx-0' : 'mx-0'
+                        } gap-3 justify-start`}
                     >
-                      <div className='w-5 h-5 flex items-center justify-center'>
-                        <Icon className='h-5 w-5 text-gray-400 group-hover:text-black data-[active=true]:text-black dark:text-gray-500 dark:group-hover:text-white dark:data-[active=true]:text-white' />
+                      <div className='w-4 h-4 flex items-center justify-center'>
+                        <Icon className='h-4 w-4 text-gray-500 group-hover:text-gray-800 dark:hover:text-gray-100 data-[active=true]:text-gray-800 dark:data-[active=true]:text-gray-100 dark:text-gray-400 dark:group-hover:text-gray-200 dark:data-[active=true]:text-gray-100' />
                       </div>
                       {!isCollapsed && (
-                        <span className='whitespace-nowrap transition-opacity duration-200 opacity-100 tracking-wider'>
+                        <span className='whitespace-nowrap transition-opacity duration-200 opacity-100'>
                           {item.label}
                         </span>
                       )}
@@ -402,33 +351,137 @@ const Sidebar = ({ onToggle, activePath = '/' }: SidebarProps) => {
                 })}
               </div>
             </div>
-            {/* 底部退出登入 */}
-            {loggedIn && (
-              <div className='mt-auto border-t border-gray-200 dark:border-gray-700 px-2 pb-4'>
-                <Link
-                  href='/api/logout'
-                  onClick={(e) => {
-                    e.preventDefault();
-                    fetch('/api/logout', { method: 'POST' }).then(() => {
-                      window.location.href = '/';
-                    });
-                  }}
-                  className={`group flex items-center rounded-lg px-2 py-2.5 pl-4 text-[15px] text-gray-400 hover:bg-gray-100 hover:text-red-500 transition-colors duration-200 min-h-[44px] dark:text-gray-500 dark:hover:bg-white/5 dark:hover:text-red-400 ${isCollapsed ? 'w-full max-w-none mx-0 justify-center' : 'mx-0 justify-start'
-                    } gap-3.5`}
+
+            {/* 用户菜单项 */}
+            {isLoggedIn ? (
+            <div className='px-2 pb-3 pt-2 border-t border-gray-200/50 dark:border-gray-700/50'>
+              <div className='space-y-1'>
+                <button
+                  onClick={() => window.dispatchEvent(new CustomEvent('openUserPanel', { detail: 'notifications' }))}
+                  className={`group flex items-center rounded-lg px-2 py-2 pl-4 text-sm text-gray-700 hover:bg-gray-100/30 hover:text-gray-800 dark:hover:text-gray-100 transition-colors duration-200 min-h-[40px] dark:text-gray-300 dark:hover:text-gray-100 ${isCollapsed ? 'w-full max-w-none mx-0' : 'mx-0'
+                    } gap-3 justify-start`}
                 >
-                  <LogOut className='h-5 w-5' />
+                  <div className='w-4 h-4 flex items-center justify-center'>
+                    <Bell className='h-4 w-4 text-gray-500 group-hover:text-gray-800 dark:hover:text-gray-100 dark:text-gray-400 dark:group-hover:text-gray-200' />
+                  </div>
                   {!isCollapsed && (
-                    <span className='whitespace-nowrap tracking-wider'>退出</span>
+                    <span className='whitespace-nowrap transition-opacity duration-200 opacity-100'>
+                      通知中心
+                    </span>
                   )}
-                </Link>
-              </div>
-            )}
-            {/* 隐藏的UserMenu - 提供面板功能 */}
-            <div className='border-t border-gray-200 dark:border-gray-700 pt-3 pb-3 hidden'>
-              <div className='flex justify-center'>
-                <UserMenu />
+                </button>
+                <button
+                  onClick={() => window.dispatchEvent(new CustomEvent('openUserPanel', { detail: 'favorites' }))}
+                  className={`group flex items-center rounded-lg px-2 py-2 pl-4 text-sm text-gray-700 hover:bg-gray-100/30 hover:text-gray-800 dark:hover:text-gray-100 transition-colors duration-200 min-h-[40px] dark:text-gray-300 dark:hover:text-gray-100 ${isCollapsed ? 'w-full max-w-none mx-0' : 'mx-0'
+                    } gap-3 justify-start`}
+                >
+                  <div className='w-4 h-4 flex items-center justify-center'>
+                    <Heart className='h-4 w-4 text-gray-500 group-hover:text-gray-800 dark:hover:text-gray-100 dark:text-gray-400 dark:group-hover:text-gray-200' />
+                  </div>
+                  {!isCollapsed && (
+                    <span className='whitespace-nowrap transition-opacity duration-200 opacity-100'>
+                      我的收藏
+                    </span>
+                  )}
+                </button>
+                <button
+                  onClick={() => window.dispatchEvent(new CustomEvent('openUserPanel', { detail: 'settings' }))}
+                  className={`group flex items-center rounded-lg px-2 py-2 pl-4 text-sm text-gray-700 hover:bg-gray-100/30 hover:text-gray-800 dark:hover:text-gray-100 transition-colors duration-200 min-h-[40px] dark:text-gray-300 dark:hover:text-gray-100 ${isCollapsed ? 'w-full max-w-none mx-0' : 'mx-0'
+                    } gap-3 justify-start`}
+                >
+                  <div className='w-4 h-4 flex items-center justify-center'>
+                    <Settings className='h-4 w-4 text-gray-500 group-hover:text-gray-800 dark:hover:text-gray-100 dark:text-gray-400 dark:group-hover:text-gray-200' />
+                  </div>
+                  {!isCollapsed && (
+                    <span className='whitespace-nowrap transition-opacity duration-200 opacity-100'>
+                      设置
+                    </span>
+                  )}
+                </button>
+                {isAdmin && (
+                <button
+                  onClick={() => window.dispatchEvent(new CustomEvent('openUserPanel', { detail: 'tv-access' }))}
+                  className={`group flex items-center rounded-lg px-2 py-2 pl-4 text-sm text-gray-700 hover:bg-gray-100/30 hover:text-gray-800 dark:hover:text-gray-100 transition-colors duration-200 min-h-[40px] dark:text-gray-300 dark:hover:text-gray-100 ${isCollapsed ? 'w-full max-w-none mx-0' : 'mx-0'
+                    } gap-3 justify-start`}
+                >
+                  <div className='w-4 h-4 flex items-center justify-center'>
+                    <Monitor className='h-4 w-4 text-gray-500 group-hover:text-gray-800 dark:hover:text-gray-100 dark:text-gray-400 dark:group-hover:text-gray-200' />
+                  </div>
+                  {!isCollapsed && (
+                    <span className='whitespace-nowrap transition-opacity duration-200 opacity-100'>
+                      电视访问
+                    </span>
+                  )}
+                </button>
+                )}
+                {isAdmin && (
+                <button
+                  onClick={() => window.dispatchEvent(new CustomEvent('openUserPanel', { detail: 'admin' }))}
+                  className={`group flex items-center rounded-lg px-2 py-2 pl-4 text-sm text-gray-700 hover:bg-gray-100/30 hover:text-gray-800 dark:hover:text-gray-100 transition-colors duration-200 min-h-[40px] dark:text-gray-300 dark:hover:text-gray-100 ${isCollapsed ? 'w-full max-w-none mx-0' : 'mx-0'
+                    } gap-3 justify-start`}
+                >
+                  <div className='w-4 h-4 flex items-center justify-center'>
+                    <Shield className='h-4 w-4 text-gray-500 group-hover:text-gray-800 dark:hover:text-gray-100 dark:text-gray-400 dark:group-hover:text-gray-200' />
+                  </div>
+                  {!isCollapsed && (
+                    <span className='whitespace-nowrap transition-opacity duration-200 opacity-100'>
+                      管理面板
+                    </span>
+                  )}
+                </button>
+                )}
+                <button
+                  onClick={() => window.dispatchEvent(new CustomEvent('openUserPanel', { detail: 'eco-apps' }))}
+                  className={`group flex items-center rounded-lg px-2 py-2 pl-4 text-sm text-gray-700 hover:bg-gray-100/30 hover:text-gray-800 dark:hover:text-gray-100 transition-colors duration-200 min-h-[40px] dark:text-gray-300 dark:hover:text-gray-100 ${isCollapsed ? 'w-full max-w-none mx-0' : 'mx-0'
+                    } gap-3 justify-start`}
+                >
+                  <div className='w-4 h-4 flex items-center justify-center'>
+                    <LayoutGrid className='h-4 w-4 text-gray-500 group-hover:text-gray-800 dark:hover:text-gray-100 dark:text-gray-400 dark:group-hover:text-gray-200' />
+                  </div>
+                  {!isCollapsed && (
+                    <span className='whitespace-nowrap transition-opacity duration-200 opacity-100'>
+                      平台应用
+                    </span>
+                  )}
+                </button>
+
+                <div className='my-1 border-t border-gray-200/50 dark:border-gray-700/50'></div>
+
+                <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'} px-2 pt-1`}>
+                  {!isCollapsed && (
+                    <span className='text-xs text-gray-500 dark:text-gray-400 truncate max-w-[120px]' title={username}>
+                      <User className='h-3 w-3 inline mr-1' />
+                      {username}
+                    </span>
+                  )}
+                  <button
+                    onClick={() => window.dispatchEvent(new CustomEvent('openUserPanel', { detail: 'logout' }))}
+                    className='flex items-center justify-center p-1.5 rounded-lg text-red-500 hover:bg-red-50/70 dark:hover:bg-red-900/20 transition-colors'
+                    title='退出'
+                  >
+                    <LogOut className='h-4 w-4' />
+                  </button>
+                </div>
               </div>
             </div>
+            ) : (
+            <div className='px-2 pb-3 pt-2 border-t border-gray-200/50 dark:border-gray-700/50'>
+              <Link
+                href='/login'
+                className={`group flex items-center rounded-lg px-2 py-2 pl-4 text-sm text-gray-700 hover:bg-gray-100/30 hover:text-gray-800 dark:hover:text-gray-100 transition-colors duration-200 min-h-[40px] dark:text-gray-300 dark:hover:text-gray-100 ${isCollapsed ? 'w-full max-w-none mx-0' : 'mx-0'
+                  } gap-3 justify-start`}
+              >
+                <div className='w-4 h-4 flex items-center justify-center'>
+                  <User className='h-4 w-4 text-gray-500 group-hover:text-gray-800 dark:hover:text-gray-100 dark:text-gray-400 dark:group-hover:text-gray-200' />
+                </div>
+                {!isCollapsed && (
+                  <span className='whitespace-nowrap transition-opacity duration-200 opacity-100'>
+                    登录
+                  </span>
+                )}
+              </Link>
+            </div>
+            )}
           </div>
         </aside>
         <div

@@ -1,10 +1,10 @@
-'use client';
+﻿'use client';
 
 import { BookReadRecord, BookShelfItem } from './book.types';
 import { fetchWithAuth, generateStorageKey } from './db.client';
 
-const BOOK_SHELF_KEY = 'moontv_book_shelf';
-const BOOK_HISTORY_KEY = 'moontv_book_history';
+const BOOK_SHELF_KEY = 'movie_book_shelf';
+const BOOK_HISTORY_KEY = 'movie_book_history';
 const MAX_BOOK_HISTORY = 100;
 const MAX_BOOK_HISTORY_THRESHOLD = MAX_BOOK_HISTORY + 10;
 

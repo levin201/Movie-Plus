@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { Check, ChevronDown, Download, Trash2, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
@@ -123,7 +123,7 @@ export function DownloadManagementPanel({
         if (task.downloadMode === 'filesystem') {
           try {
             // 从 IndexedDB 读取目录句柄
-            const dbName = 'MoonTVPlus';
+            const dbName = 'MoviePlus';
             const storeName = 'dirHandles';
 
             const dirHandle = await new Promise<
@@ -282,7 +282,7 @@ export function DownloadManagementPanel({
   const getStoredDownloadDirHandle = async (): Promise<
     FileSystemDirectoryHandle | undefined
   > => {
-    const dbName = 'MoonTVPlus';
+    const dbName = 'MoviePlus';
     const storeName = 'dirHandles';
 
     return new Promise<FileSystemDirectoryHandle | undefined>((resolve) => {

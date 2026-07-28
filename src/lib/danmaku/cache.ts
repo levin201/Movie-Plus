@@ -3,7 +3,7 @@
 import type { DanmakuComment } from './types';
 
 // IndexedDB 数据库名称和版本
-const DB_NAME = 'MoviePlus_danmaku_cache_v2';
+const DB_NAME = 'movieplus_danmaku_cache_v2';
 const DB_VERSION = 1;
 const STORE_NAME = 'danmaku';
 

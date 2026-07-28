@@ -10,7 +10,7 @@ export class KvrocksStorage extends BaseRedisStorage {
       url: process.env.KVROCKS_URL!,
       clientName: 'Kvrocks'
     };
-    const globalSymbol = Symbol.for('__MovieTV_KVROCKS_CLIENT__');
+    const globalSymbol = Symbol.for('__MOVIEPLUS_KVROCKS_CLIENT__');
     const client = createRedisClient(config, globalSymbol);
     const adapter = new StandardRedisAdapter(client);
     const withRetry = createRetryWrapper(config.clientName, () => client);

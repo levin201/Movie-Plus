@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import {
   ChevronLeft,
@@ -486,7 +486,7 @@ export default function BannerCarousel({
       >
         <Image
           src='/logo.png'
-          alt='MoviePlus'
+          alt='Movie-Plus'
           width={120}
           height={120}
           className='opacity-50'
