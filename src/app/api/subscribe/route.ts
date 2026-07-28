@@ -30,6 +30,11 @@ export async function POST(request: NextRequest) {
       await d1db.prepare(
         'UPDATE users SET subscription_expiry = ? WHERE username = ?'
       ).bind(newExpiry, authInfo.username).run();
+      // Clear in-memory cache
+      try {
+        const { userInfoCache } = await import('@/lib/user-cache');
+        userInfoCache?.delete(authInfo.username);
+      } catch (_) {}
     }
 
     return NextResponse.json({
