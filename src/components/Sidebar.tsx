@@ -157,6 +157,7 @@ const Sidebar = ({ onToggle, activePath = '/' }: SidebarProps) => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState('');
+  const [userColor, setUserColor] = useState('');
 
   useEffect(() => {
     const auth = getAuthInfoFromBrowserCookie();
@@ -166,6 +167,10 @@ const Sidebar = ({ onToggle, activePath = '/' }: SidebarProps) => {
       if (auth.role === 'owner' || auth.role === 'admin') {
         setIsAdmin(true);
       }
+      // Generate random color based on username for consistency
+      const colors = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#06b6d4', '#3b82f6', '#8b5cf6', '#ec4899'];
+      const index = (auth.username || '').split('').reduce((a, c) => a + c.charCodeAt(0), 0) % colors.length;
+      setUserColor(colors[index]);
     }
   }, []);
 
@@ -439,8 +444,8 @@ const Sidebar = ({ onToggle, activePath = '/' }: SidebarProps) => {
                     className='flex items-center gap-2 hover:opacity-70 transition-opacity'
                   >
                     {!isCollapsed && (
-                      <span className='text-xs text-gray-500 dark:text-gray-400 truncate max-w-[120px]' title={username}>
-                        <User className='h-3 w-3 inline mr-1' />
+                      <span className='text-sm font-medium truncate max-w-[120px]' style={{ color: userColor }} title={username}>
+                        <User className='h-4 w-4 inline mr-1' />
                         {username}
                       </span>
                     )}

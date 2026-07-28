@@ -914,14 +914,6 @@ function HomeClient() {
                 homeBannerEnabled ? '' : 'mt-[30px]'
               }`}
             >
-              <button
-                onClick={handleDirectPlay}
-                className='p-1.5 rounded-lg text-blue-500 hover:text-blue-600 transition-colors'
-                title='直链播放'
-              >
-                <LinkIcon size={18} />
-              </button>
-
               {musicEnabled && (
                 <Link href='/music' prefetch={false}>
                   <button
@@ -951,18 +943,6 @@ function HomeClient() {
                     title='电子书馆'
                   >
                     <BookMarked size={18} />
-                  </button>
-                </Link>
-              )}
-
-              {/* 源站寻片入口 */}
-              {sourceSearchEnabled && (
-                <Link href='/source-search'>
-                  <button
-                    className='p-2 rounded-lg text-blue-500 hover:text-blue-600 transition-colors'
-                    title='源站寻片'
-                  >
-                    <ListVideo size={20} />
                   </button>
                 </Link>
               )}
