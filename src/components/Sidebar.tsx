@@ -2,7 +2,7 @@
 
 'use client';
 
-import { Bell, Blend, Cat, Clover, Container, Film, Globe, Heart, Home, LayoutGrid, LogOut, Menu, Monitor, Settings, Shield, Star, Tv, TvMinimalPlay, User, Users } from 'lucide-react';
+import { Blend, Cat, Clover, Container, Film, Globe, Home, LayoutGrid, LogOut, Menu, Monitor, Shield, Star, Tv, TvMinimalPlay, User, Users } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import {
@@ -356,48 +356,6 @@ const Sidebar = ({ onToggle, activePath = '/' }: SidebarProps) => {
             {isLoggedIn ? (
             <div className='px-2 pb-3 pt-2 border-t border-gray-200/50 dark:border-gray-700/50'>
               <div className='space-y-1'>
-                <button
-                  onClick={() => window.dispatchEvent(new CustomEvent('openUserPanel', { detail: 'notifications' }))}
-                  className={`group flex items-center rounded-lg px-2 py-2 pl-4 text-sm text-gray-700 hover:bg-gray-100/30 hover:text-gray-800 dark:hover:text-gray-100 transition-colors duration-200 min-h-[40px] dark:text-gray-300 dark:hover:text-gray-100 ${isCollapsed ? 'w-full max-w-none mx-0' : 'mx-0'
-                    } gap-3 justify-start`}
-                >
-                  <div className='w-4 h-4 flex items-center justify-center'>
-                    <Bell className='h-4 w-4 text-gray-500 group-hover:text-gray-800 dark:hover:text-gray-100 dark:text-gray-400 dark:group-hover:text-gray-200' />
-                  </div>
-                  {!isCollapsed && (
-                    <span className='whitespace-nowrap transition-opacity duration-200 opacity-100'>
-                      通知中心
-                    </span>
-                  )}
-                </button>
-                <button
-                  onClick={() => window.dispatchEvent(new CustomEvent('openUserPanel', { detail: 'favorites' }))}
-                  className={`group flex items-center rounded-lg px-2 py-2 pl-4 text-sm text-gray-700 hover:bg-gray-100/30 hover:text-gray-800 dark:hover:text-gray-100 transition-colors duration-200 min-h-[40px] dark:text-gray-300 dark:hover:text-gray-100 ${isCollapsed ? 'w-full max-w-none mx-0' : 'mx-0'
-                    } gap-3 justify-start`}
-                >
-                  <div className='w-4 h-4 flex items-center justify-center'>
-                    <Heart className='h-4 w-4 text-gray-500 group-hover:text-gray-800 dark:hover:text-gray-100 dark:text-gray-400 dark:group-hover:text-gray-200' />
-                  </div>
-                  {!isCollapsed && (
-                    <span className='whitespace-nowrap transition-opacity duration-200 opacity-100'>
-                      我的收藏
-                    </span>
-                  )}
-                </button>
-                <button
-                  onClick={() => window.dispatchEvent(new CustomEvent('openUserPanel', { detail: 'settings' }))}
-                  className={`group flex items-center rounded-lg px-2 py-2 pl-4 text-sm text-gray-700 hover:bg-gray-100/30 hover:text-gray-800 dark:hover:text-gray-100 transition-colors duration-200 min-h-[40px] dark:text-gray-300 dark:hover:text-gray-100 ${isCollapsed ? 'w-full max-w-none mx-0' : 'mx-0'
-                    } gap-3 justify-start`}
-                >
-                  <div className='w-4 h-4 flex items-center justify-center'>
-                    <Settings className='h-4 w-4 text-gray-500 group-hover:text-gray-800 dark:hover:text-gray-100 dark:text-gray-400 dark:group-hover:text-gray-200' />
-                  </div>
-                  {!isCollapsed && (
-                    <span className='whitespace-nowrap transition-opacity duration-200 opacity-100'>
-                      设置
-                    </span>
-                  )}
-                </button>
                 {isAdmin && (
                 <button
                   onClick={() => window.dispatchEvent(new CustomEvent('openUserPanel', { detail: 'tv-access' }))}
