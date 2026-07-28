@@ -1432,6 +1432,9 @@ export const UserMenu: React.FC = () => {
         case 'logout':
           handleLogout();
           break;
+        case 'profile':
+          handleOpenProfileCenter();
+          break;
         case 'admin':
           handleAdminPanel();
           break;
