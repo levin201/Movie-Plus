@@ -1388,6 +1388,7 @@ export class D1Storage implements IStorage {
             | undefined,
           email: user.email as string | undefined,
           emailNotifications: user.email_notifications === 1,
+          subscription_expiry: user.subscription_expiry as number | undefined,
         };
 
         // 如果是站长，强制将 role 设置为 owner
@@ -1466,10 +1467,11 @@ export class D1Storage implements IStorage {
           `
           INSERT INTO users (
             username, password_hash, role, banned, tags, oidc_sub,
-            enabled_apis, created_at, playrecord_migrated,
+            enabled_apis, created_at, subscription_expiry,
+            playrecord_migrated,
             favorite_migrated, skip_migrated
           )
-          VALUES (?, ?, ?, 0, ?, ?, ?, ?, 1, 1, 1)
+          VALUES (?, ?, ?, 0, ?, ?, ?, ?, ?, 1, 1, 1)
         `
         )
         .bind(
@@ -1479,7 +1481,8 @@ export class D1Storage implements IStorage {
           tags ? JSON.stringify(tags) : null,
           oidcSub || null,
           enabledApis ? JSON.stringify(enabledApis) : null,
-          Date.now()
+          Date.now(),
+          Date.now() + 90 * 24 * 60 * 60 * 1000  // 3 months trial
         )
         .run();
 

@@ -351,6 +351,17 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: '用户被封禁' }, { status: 401 });
     }
 
+    // 检查订阅到期（管理员除外）
+    if (userRole !== 'owner' && userRole !== 'admin') {
+      const subExpiry = userInfoV2.subscription_expiry;
+      if (subExpiry && subExpiry > 0 && Date.now() > subExpiry) {
+        return NextResponse.json(
+          { error: '您的试用已到期，请联系管理员续费' },
+          { status: 402 }
+        );
+      }
+    }
+
     if (!pass) {
       recordLoginFailure(clientIp);
       return NextResponse.json(
