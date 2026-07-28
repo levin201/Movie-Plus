@@ -93,3 +93,50 @@ export async function GET(request: NextRequest) {
     );
   }
 }
+
+export async function PATCH(request: NextRequest) {
+  const storageType = process.env.NEXT_PUBLIC_STORAGE_TYPE || 'localstorage';
+  if (storageType === 'localstorage') {
+    return NextResponse.json({ error: '不支持本地存储' }, { status: 400 });
+  }
+
+  try {
+    const authInfo = getAuthInfoFromCookie(request);
+    if (!authInfo?.username) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    let operatorRole: 'owner' | 'admin' | 'user' = 'user';
+    if (authInfo.username === process.env.USERNAME) {
+      operatorRole = 'owner';
+    } else {
+      const operatorInfo = await db.getUserInfoV2(authInfo.username);
+      if (operatorInfo) {
+        operatorRole = operatorInfo.role;
+      }
+    }
+
+    if (operatorRole !== 'owner' && operatorRole !== 'admin') {
+      return NextResponse.json({ error: '无权限' }, { status: 403 });
+    }
+
+    const { username, months } = await request.json();
+    if (!username || !months || months <= 0) {
+      return NextResponse.json({ error: '参数错误' }, { status: 400 });
+    }
+
+    const expiry = Date.now() + months * 30 * 24 * 60 * 60 * 1000;
+
+    if (typeof (db as any).storage?.db?.prepare === 'function') {
+      const d1db = (db as any).storage.db;
+      await d1db.prepare(
+        'UPDATE users SET subscription_expiry = ? WHERE username = ?'
+      ).bind(expiry, username).run();
+    }
+
+    return NextResponse.json({ ok: true, expiry, message: `已将 ${username} 的订阅延长 ${months} 个月` });
+  } catch (error) {
+    console.error('更新订阅失败:', error);
+    return NextResponse.json({ error: '更新失败' }, { status: 500 });
+  }
+}
