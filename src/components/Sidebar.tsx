@@ -2,7 +2,7 @@
 
 'use client';
 
-import { Blend, Cat, Clover, Container, Film, Globe, Home, LayoutGrid, LogOut, Menu, Monitor, Shield, Star, Tv, TvMinimalPlay, User, Users } from 'lucide-react';
+import { Blend, Cat, Clover, Container, Film, Globe, Home, LayoutGrid, Link as LinkIcon, ListVideo, LogOut, Menu, Monitor, Shield, Star, Tv, TvMinimalPlay, User, Users } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import {
@@ -356,6 +356,34 @@ const Sidebar = ({ onToggle, activePath = '/' }: SidebarProps) => {
             {isLoggedIn ? (
             <div className='px-2 pb-3 pt-2 border-t border-gray-200/50 dark:border-gray-700/50'>
               <div className='space-y-1'>
+                <button
+                  onClick={() => window.dispatchEvent(new CustomEvent('openUserPanel', { detail: 'direct-play' }))}
+                  className={`group flex items-center rounded-lg px-2 py-2 pl-4 text-sm text-gray-700 hover:bg-gray-100/30 hover:text-gray-800 dark:hover:text-gray-100 transition-colors duration-200 min-h-[40px] dark:text-gray-300 dark:hover:text-gray-100 ${isCollapsed ? 'w-full max-w-none mx-0' : 'mx-0'
+                    } gap-3 justify-start`}
+                >
+                  <div className='w-4 h-4 flex items-center justify-center'>
+                    <LinkIcon className='h-4 w-4 text-gray-500 group-hover:text-gray-700 dark:text-gray-400 dark:group-hover:text-gray-200' />
+                  </div>
+                  {!isCollapsed && (
+                    <span className='whitespace-nowrap transition-opacity duration-200 opacity-100'>
+                      直链播放
+                    </span>
+                  )}
+                </button>
+                <Link
+                  href='/source-search'
+                  className={`group flex items-center rounded-lg px-2 py-2 pl-4 text-sm text-gray-700 hover:bg-gray-100/30 hover:text-gray-800 dark:hover:text-gray-100 transition-colors duration-200 min-h-[40px] dark:text-gray-300 dark:hover:text-gray-100 ${isCollapsed ? 'w-full max-w-none mx-0' : 'mx-0'
+                    } gap-3 justify-start`}
+                >
+                  <div className='w-4 h-4 flex items-center justify-center'>
+                    <ListVideo className='h-4 w-4 text-gray-500 group-hover:text-gray-700 dark:text-gray-400 dark:group-hover:text-gray-200' />
+                  </div>
+                  {!isCollapsed && (
+                    <span className='whitespace-nowrap transition-opacity duration-200 opacity-100'>
+                      源站寻片
+                    </span>
+                  )}
+                </Link>
                 {isAdmin && (
                 <button
                   onClick={() => window.dispatchEvent(new CustomEvent('openUserPanel', { detail: 'tv-access' }))}

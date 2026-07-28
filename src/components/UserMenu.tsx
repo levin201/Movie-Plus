@@ -1426,6 +1426,15 @@ export const UserMenu: React.FC = () => {
             fetchSubscribeUrl();
           }
           break;
+        case 'direct-play': {
+          setIsOpen(false);
+          const url = window.prompt('请输入可直接播放的视频链接：');
+          if (url) {
+            const encoded = btoa(unescape(encodeURIComponent(url)));
+            router.push(`/play?source=directplay&id=${encodeURIComponent(encoded)}`);
+          }
+          break;
+        }
         case 'eco-apps':
           setIsEcoAppsOpen(true);
           break;
