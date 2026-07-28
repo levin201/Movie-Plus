@@ -238,20 +238,19 @@ function LoginPageClient() {
       });
 
       if (res.ok) {
+        const data = await res.json().catch(() => ({}));
         // 处理记住密码逻辑
         if (rememberPassword) {
           const credentials: any = { password };
-          // 如果需要用户名且有用户名，就保存用户名
           if (shouldAskUsername && username) {
             credentials.username = username;
           }
           localStorage.setItem('rememberedCredentials', JSON.stringify(credentials));
         } else {
-          // 如果不记住密码，清除已存储的信息
           localStorage.removeItem('rememberedCredentials');
         }
 
-        const redirect = searchParams.get('redirect') || '/';
+        const redirect = data.redirect || searchParams.get('redirect') || '/';
         window.location.replace(redirect);
       } else {
         // 登录失败，重置Turnstile

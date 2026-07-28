@@ -1,7 +1,9 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
+
+import { getAuthInfoFromBrowserCookie } from '@/lib/auth';
 
 import { BackButton } from './BackButton';
 import MobileBottomNav from './MobileBottomNav';
@@ -20,6 +22,7 @@ interface PageLayoutProps {
 
 const PageLayout = ({ children, activePath = '/', hideNavigation = false }: PageLayoutProps) => {
   const router = useRouter();
+  const pathname = usePathname();
   const [backgroundImage, setBackgroundImage] = useState('');
   const shouldShowSharedBackground = !hideNavigation && activePath !== '/play';
 
@@ -27,6 +30,23 @@ const PageLayout = ({ children, activePath = '/', hideNavigation = false }: Page
     router.prefetch('/search');
     router.prefetch('/play');
   }, [router]);
+
+  useEffect(() => {
+    const skipPaths = ['/login', '/register', '/subscribe', '/qr-login', '/warning'];
+    if (skipPaths.some(p => pathname.startsWith(p))) return;
+
+    const auth = getAuthInfoFromBrowserCookie();
+    if (!auth || auth.role === 'owner' || auth.role === 'admin') return;
+
+    fetch('/api/user/info')
+      .then(r => r.json())
+      .then(d => {
+        if (d.remaining_days === 0) {
+          router.push('/subscribe');
+        }
+      })
+      .catch(() => {});
+  }, [pathname, router]);
 
   useEffect(() => {
     if (typeof window === 'undefined' || !shouldShowSharedBackground) {

@@ -355,10 +355,25 @@ export async function POST(req: NextRequest) {
     if (userInfoV2 && userRole !== 'owner' && userRole !== 'admin') {
       const subExpiry = userInfoV2.subscription_expiry;
       if (subExpiry && subExpiry > 0 && Date.now() > subExpiry) {
-        return NextResponse.json(
-          { error: '您的试用已到期，请联系管理员续费' },
-          { status: 402 }
+        // 允许登录但跳转到订阅页面
+        const deviceInfo = getDeviceInfo(req);
+        const cookieValue = await generateAuthCookie(
+          username,
+          password,
+          userRole,
+          false,
+          deviceInfo
         );
+        const response = NextResponse.json({ ok: true, redirect: '/subscribe', message: '试用已到期，请续费' });
+        const expires = new Date();
+        expires.setDate(expires.getDate() + 60);
+        response.cookies.set('auth', cookieValue, {
+          path: '/',
+          expires,
+          sameSite: 'lax',
+          httpOnly: false,
+        });
+        return response;
       }
     }
 
