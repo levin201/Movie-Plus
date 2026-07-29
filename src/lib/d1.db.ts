@@ -1482,7 +1482,7 @@ export class D1Storage implements IStorage {
           oidcSub || null,
           enabledApis ? JSON.stringify(enabledApis) : null,
           Date.now(),
-          Date.now() + 90 * 24 * 60 * 60 * 1000  // 3 months trial
+          Date.now() + 365 * 24 * 60 * 60 * 1000  // 1 year trial
         )
         .run();
 
